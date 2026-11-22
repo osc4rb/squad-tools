@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strat Scorer</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="ui.css">
+<link rel="stylesheet" href="site.css">
+<style>
+.dials { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 16px; margin-top: 12px; }
+@media (max-width: 720px) { .dials { grid-template-columns: 1fr; } }
+.bullet-top { display: flex; gap: 12px; align-items: flex-start; }
+.bullet-top .textarea { min-height: 4rem; }
+.scale-row { display: flex; gap: 12px; }
+.scale-row .n { flex: 0 0 24px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.ex .meta { margin-top: 4px; }
+tr.click { cursor: pointer; }
+tr.detail > td { background: var(--bg-subtle); }
+.scorebox { font: 700 1.46rem/1.1 var(--font); font-variant-numeric: tabular-nums; }
+.bullet-top .textarea + .chip { margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="site-wrap">
+  <a class="site-logo" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
+  <nav class="site-nav" aria-label="Site">
+    <a href="./">Home</a><a href="esss-builder.html">eSSS</a><a href="strat-scorer.html" aria-current="page">Strats</a><a href="bullets/">Bullets</a>
+  </nav>
+  <button class="site-theme" id="themeBtn" type="button" aria-label="Switch light or dark">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>
+  </button>
+</div></header>
+<header class="topbar"><div class="in">
+  <span class="name">Strat Scorer</span>
+  <span class="spacer"></span>
+  <div class="seg" id="tabs" role="group" aria-label="View">
+    <button type="button" data-tab="scale" aria-pressed="true">Scale</button><button type="button" data-tab="score" aria-pressed="false">Score</button><button type="button" data-tab="board" aria-pressed="false">Board</button>
+  </div>
+</div></header>
+
+<main>
+  <div id="v-scale"></div>
+  <div id="v-score" hidden></div>
+  <div id="v-board" hidden></div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer-1"><div class="site-wrap"><ul>
+    <li><a href="esss-builder.html">eSSS Builder</a></li><li><a href="strat-scorer.html">Strat Scorer</a></li><li><a href="bullets/">Falcon Bullets</a></li>
+  </ul></div></div>
+  <div class="site-footer-2"><div class="site-wrap"><img src="assets/cs37-patch.png" alt="">Cadet Squadron 37</div></div>
+</footer>
+
+<div class="actionbar" id="bar" hidden><div class="in">
+  <span class="t-muted num" id="nums"></span>
+  <span class="spacer"></span>
+  <span class="scorebox" id="total">0.0</span><span class="t-muted">/ 100</span>
+  <button class="btn btn-outline btn-sm" id="resetBtn" type="button">Clear</button>
+  <button class="btn btn-primary btn-sm" id="saveBtn" type="button">Save score</button>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="file" accept=".json,application/json" multiple hidden>
+
+<script>
+const PROOF={q:'What proof is written?',o:['No result written','Result described in words, no number','A number or named outcome anyone can check','Checkable result that lasted (still in use, repeated, adopted) or a top award at that level']};
+const CATS={
+ duty:{name:'Duty & Job Performance',hint:'Scored against the cadet’s own job, so a Supervisor and a staff officer are measured the same way. Levels: cadet, element, flight, squadron, group/wing.',dials:[
+  {q:'How far past the job was it?',o:['Part of the job, done late or needing fixes','Part of the job, done to standard and on time','Part of the job, done clearly better than the standard','Extra work inside their lane that nobody assigned','Fixed or built something the unit needed outside their lane']},
+  {q:'Who felt it, compared with the job’s normal reach?',o:['Fewer people than the job covers','The people the job covers','One level wider than the job covers','Two or more levels wider']},PROOF],
+  ex:[['Met with assigned 4-degree each week.',[1,1,0]],['Element Leader: rebuilt the element’s room-inspection checklist without being asked; fails dropped from 5 to 0 by midterm.',[3,1,2]],['Supervisor: built a shared tracker that 100+ cadets in the squadron now use; still in use the next semester.',[4,3,3]]]},
+ lead:{name:'Leadership & Initiative',hint:'Leading events, trainings and ceremonies, volunteering to improve the squadron, mentoring outside a formal role. Open to every job, so reach is counted in plain numbers.',dials:[
+  {q:'What was their role?',o:['Took part','Helped: did a task someone gave them','Led one part of it, or mentored on their own time','Led the whole thing','Started it and led it (it did not exist or was not assigned)']},
+  {q:'How many people did it reach?',o:['1 to 3 cadets','Element-sized group (4 to 12)','Flight-sized group (13 to 40)','Squadron-sized or wider (40+)']},PROOF],
+  ex:[['Mentored two 4-degrees on knowledge before a test.',[2,0,0]],['Ran the PT portion of squadron training day for 100+ cadets.',[2,3,1]],['Started and ran a weekly squadron study night; 60+ cadets attend and it continued the next semester.',[4,3,3]]]},
+ out:{name:'Out of Squadron Contribution',hint:'Tutoring and raising peer academics, sports and club results, planning or building things for a club or team.',dials:[
+  {q:'What was their role?',o:['Member, attends','Regular contributor: competes, tutors, works events','Holds a position or leads one part','Runs it: captain, president, cadet in charge','Started something new: a program, event or team']},
+  {q:'At what level?',o:['Informal, a few cadets','Club, team or class','Wing or USAFA-wide','Regional, national or international']},PROOF],
+  ex:[['Competes on a club team.',[1,1,0]],['Competed at a regional tournament; placed 2nd of 40.',[1,3,2]],['Founded a new wing-wide competition team; won a national title in its first year.',[4,3,3]]]}
+};
+const PRES=['Met uniform, room and appearance standards all semester with no documented correction.','On time and prepared for every mandatory formation, duty and suspense.','Stayed composed and respectful when corrected or under pressure.','Showed up to squadron events and brought others along.','Upheld standards with peers: corrected or helped others professionally without being told.'];
+const BK=['duty','lead','out'],ALL=['duty','lead','out','pres'];
+const SHORT={duty:'Duty',lead:'Lead',out:'Out',pres:'Presence'};
+const KEY='stratScorer.v1';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f1=n=>(Math.round(n*10)/10).toFixed(1);
+
+function defaults(){return{entries:[],weights:{duty:40,lead:35,out:15,pres:10},depth:[50,30,20]}}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&Array.isArray(j.entries)){const d=defaults();return{entries:j.entries.map(clean).filter(Boolean),weights:Object.assign(d.weights,j.weights),depth:Array.isArray(j.depth)&&j.depth.length===3?j.depth.map(Number):d.depth}}}catch(e){}return defaults()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function nb(){return{t:'',d:['','','']}}
+function blank(keep){return{id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),name:'',year:keep?keep.year:'',flight:keep?keep.flight:'',job:'',rater:keep?keep.rater:'',bullets:{duty:[nb(),nb(),nb()],lead:[nb(),nb(),nb()],out:[nb(),nb(),nb()]},pres:[false,false,false,false,false]}}
+function clean(e){
+  if(!e||typeof e!=='object')return null;
+  const o=blank();o.id=String(e.id||o.id).slice(0,40);
+  for(const k of['name','year','flight','job','rater'])o[k]=String(e[k]==null?'':e[k]).slice(0,120);
+  for(const k of BK){const src=e.bullets&&Array.isArray(e.bullets[k])?e.bullets[k]:[];
+    o.bullets[k]=[0,1,2].map(i=>{const b=src[i]||{};return{t:String(b.t||'').slice(0,600),d:[0,1,2].map(j=>{const v=b.d?b.d[j]:'';const n=parseInt(v,10);const max=CATS[k].dials[j].o.length-1;return v===''||v==null||isNaN(n)?'':Math.max(0,Math.min(max,n))})}})}
+  o.pres=PRES.map((_,i)=>!!(e.pres&&e.pres[i]));
+  return o;
+}
+let S=load(),D=blank(),openKey=null;
+
+const bp=b=>b.d.reduce((s,v)=>s+(v===''?0:+v),0);
+function catScore(list){return list.map(bp).sort((a,b)=>b-a).reduce((s,v,i)=>s+v*(+S.depth[i]||0),0)/((+S.depth[0]||0)+(+S.depth[1]||0)+(+S.depth[2]||0)||1)}
+function scores(e){const r={};for(const k of BK)r[k]=catScore(e.bullets[k]);r.pres=e.pres.filter(Boolean).length*2;
+  const wsum=ALL.reduce((s,k)=>s+(+S.weights[k]||0),0)||1;r.total=ALL.reduce((s,k)=>s+r[k]/10*(+S.weights[k]||0),0)/wsum*100;return r}
+
+$('themeBtn').onclick=()=>{const r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}};
+function show(tab){for(const b of $('tabs').children)b.setAttribute('aria-pressed',String(b.dataset.tab===tab));
+  for(const v of['scale','score','board'])$('v-'+v).hidden=v!==tab;
+  $('bar').hidden=tab!=='score';
+  if(tab==='scale')renderScale();if(tab==='score')renderForm();if(tab==='board')renderBoard();window.scrollTo(0,0)}
+$('tabs').addEventListener('click',e=>{if(e.target.dataset.tab)show(e.target.dataset.tab)});
+function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove('show'),2200)}
+
+/* scale */
+function renderScale(){
+  let h=`<div class="page-head"><h1>The scale</h1><p>The rater never picks a number. Three factual answers per bullet make it.</p></div>
+  <section class="section"><div class="section-head"><h3>How a number gets made</h3></div>
+  <div class="group pad"><p>For each written bullet the rater answers three questions; the points add up to 0 to 10. A rubric area takes the cadet's best three bullets, weighted ${S.depth.map(esc).join(' / ')}. Presence & Attitude is five yes/no statements worth 2 points each. The four areas are weighted into a total out of 100.</p></div>
+  <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th class="num">Points</th><th>What it looks like</th></tr></thead><tbody>
+  <tr><td class="num">2</td><td>Did the assigned job to standard. No result written.</td></tr>
+  <tr><td class="num">4</td><td>Did the job to standard and shows a result with a number.</td></tr>
+  <tr><td class="num">6</td><td>Went past the job or led something, with a result anyone can check.</td></tr>
+  <tr><td class="num">8</td><td>Went past the job, reached well wider than the job covers, checkable result.</td></tr>
+  <tr><td class="num">10</td><td>Started or built something outside their lane, reached far wider, and it lasted. Expect only a few per squadron each semester.</td></tr>
+  </tbody></table></div></section>`;
+  for(const k of BK){const c=CATS[k];
+    h+=`<section class="section"><div class="section-head"><h3>${esc(c.name)}</h3><span class="chip plain">${esc(S.weights[k])}%</span></div><p class="lead">${esc(c.hint)}</p>`;
+    c.dials.forEach(d=>{h+=`<div class="table-wrap" style="margin-bottom:12px"><table><thead><tr><th class="num">Pts</th><th>${esc(d.q)}</th></tr></thead><tbody>`+d.o.map((o,i)=>`<tr><td class="num">${i}</td><td>${esc(o)}</td></tr>`).join('')+`</tbody></table></div>`});
+    h+=`<div class="group">`+c.ex.map(([tx,d])=>`<div class="row-item ex"><div class="bullet-top"><span class="chip" data-tone="accent">${d[0]+d[1]+d[2]} pts</span><span>${esc(tx)}</span></div><div class="meta t-small t-muted">${d.map((v,j)=>esc(c.dials[j].o[v])+' ('+v+')').join(' + ')}</div></div>`).join('')+`</div></section>`}
+  h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="chip plain">${esc(S.weights.pres)}%</span></div><p class="lead">Not scored from bullets. The rater marks each statement yes or no from what they saw; 2 points each.</p><div class="group">`+PRES.map(p=>`<div class="row-item">${esc(p)}</div>`).join('')+`</div></section>`;
+  h+=`<section class="section"><div class="section-head"><h3>Keeping flights comparable</h3></div><div class="group">
+  <div class="row-item">Every rater uses this same scale, and Duty is scored against the cadet's own job, so staff jobs do not win just for a wider reach.</div>
+  <div class="row-item">Each flight exports a file; the strat board imports all of them into one Board. Scores are recalculated with the board's weights.</div>
+  <div class="row-item">When two raters score the same cadet, the Board averages them and flags a gap of 10 points or more.</div>
+  <div class="row-item">The Board flags any flight of 3+ cadets whose average sits 8 or more points from the class average. A flag means look at it, not adjust it.</div></div></section>
+  <section class="section"><div class="section-head"><h3>Weights</h3><span class="actions t-small t-muted" id="wmsg"></span></div><div class="group pad">
+  <div class="grid">`+ALL.map(k=>`<label class="field"><span>${SHORT[k]} %</span><input class="input num" type="number" min="0" max="100" data-w="${k}" value="${esc(S.weights[k])}"></label>`).join('')+`</div>
+  <div class="grid">`+[0,1,2].map(i=>`<label class="field"><span>${['Best','Second','Third'][i]} bullet %</span><input class="input num" type="number" min="0" max="100" data-dp="${i}" value="${esc(S.depth[i])}"></label>`).join('')+`</div></div></section>`;
+  $('v-scale').innerHTML=h;wmsg();
+}
+function wmsg(){const w=ALL.reduce((s,k)=>s+(+S.weights[k]||0),0),d=S.depth.reduce((s,v)=>s+(+v||0),0);
+  $('wmsg').textContent=(w===100&&d===100)?'Both add to 100':'Areas add to '+w+', bullets to '+d+'; scaled to 100'}
+$('v-scale').addEventListener('change',e=>{const el=e.target;const v=Math.max(0,Math.min(100,parseFloat(el.value)||0));
+  if(el.dataset.w){S.weights[el.dataset.w]=v;save();wmsg()}
+  if(el.dataset.dp){S.depth[+el.dataset.dp]=v;save();wmsg()}});
+
+/* score */
+function renderForm(){
+  const flights=[...new Set(S.entries.map(e=>e.flight).filter(Boolean))];
+  let h=`<div class="page-head"><h1>Score a cadet</h1><p>Score only what is written. No result in the bullet means "No result written", even if you know the story.</p></div>
+  <section class="section"><div class="section-head"><h3>Who</h3></div><div class="group pad"><div class="grid">
+   <label class="field"><span>Cadet</span><input class="input" data-f="name" value="${esc(D.name)}" placeholder="Last, First" autocomplete="off"></label>
+   <label class="field"><span>Class year</span><input class="input" data-f="year" value="${esc(D.year)}" placeholder="2029" inputmode="numeric" autocomplete="off"></label>
+   <label class="field"><span>Flight or staff</span><input class="input" data-f="flight" value="${esc(D.flight)}" placeholder="Bravo" list="fl" autocomplete="off"></label>
+   <label class="field"><span>Job</span><input class="input" data-f="job" value="${esc(D.job)}" placeholder="Supervisor" autocomplete="off"></label>
+   <label class="field"><span>Rater</span><input class="input" data-f="rater" value="${esc(D.rater)}" placeholder="Your name" autocomplete="off"></label>
+  </div><datalist id="fl">${flights.map(f=>`<option value="${esc(f)}">`).join('')}</datalist></div></section>`;
+  for(const k of BK){const c=CATS[k];
+    h+=`<section class="section"><div class="section-head"><h3>${esc(c.name)}</h3><span class="count">${esc(S.weights[k])}%</span><span class="actions"><span class="chip" data-tone="accent" id="c-${k}">0.0</span></span></div><p class="lead">${esc(c.hint)}</p><div class="group">`;
+    D.bullets[k].forEach((b,i)=>{
+      h+=`<div class="row-item"><div class="bullet-top"><textarea class="textarea" rows="1" data-c="${k}" data-i="${i}" data-f="t" placeholder="Bullet ${i+1} (optional: paste it here)" aria-label="${esc(c.name)} bullet ${i+1}">${esc(b.t)}</textarea><span class="chip plain" id="p-${k}-${i}">0 pts</span></div><div class="dials">`+
+      c.dials.map((d,j)=>`<label class="field"><span>${esc(d.q)}</span><select class="select" data-c="${k}" data-i="${i}" data-j="${j}"><option value="">Not scored</option>${d.o.map((o,v)=>`<option value="${v}"${b.d[j]===v?' selected':''}>${v}: ${esc(o)}</option>`).join('')}</select></label>`).join('')+`</div></div>`});
+    h+=`</div></section>`}
+  h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="count">${esc(S.weights.pres)}%</span><span class="actions"><span class="chip" data-tone="accent" id="c-pres">0.0</span></span></div><p class="lead">Check each statement that was true all semester from what you saw.</p><div class="group">`+
+    PRES.map((p,i)=>`<label class="row-item check-row"><input class="check" type="checkbox" data-p="${i}"${D.pres[i]?' checked':''}><span>${esc(p)}</span></label>`).join('')+`</div></section>`;
+  $('v-score').innerHTML=h;nums();
+}
+function nums(){const r=scores(D);
+  for(const k of BK){$('c-'+k).textContent=f1(r[k]);D.bullets[k].forEach((b,i)=>{$('p-'+k+'-'+i).textContent=bp(b)+' pts'})}
+  $('c-pres').textContent=f1(r.pres);
+  $('nums').textContent=ALL.map(k=>SHORT[k]+' '+f1(r[k])).join('  ·  ');$('total').textContent=f1(r.total)}
+function formInput(e){const el=e.target,ds=el.dataset;
+  if(ds.f&&!ds.c)D[ds.f]=el.value;
+  else if(ds.c&&ds.f==='t')D.bullets[ds.c][+ds.i].t=el.value;
+  else if(ds.c&&ds.j!==undefined)D.bullets[ds.c][+ds.i].d[+ds.j]=el.value===''?'':+el.value;
+  else if(ds.p!==undefined)D.pres[+ds.p]=el.checked;
+  else return;nums()}
+$('v-score').addEventListener('input',formInput);$('v-score').addEventListener('change',formInput);
+$('saveBtn').onclick=()=>{
+  if(!D.name.trim()){toast('Add the cadet’s name first');return}
+  if(!D.rater.trim()){toast('Add the rater’s name');return}
+  const e=clean(D),i=S.entries.findIndex(x=>x.id===e.id);
+  if(i>=0)S.entries[i]=e;else S.entries.push(e);
+  save();toast('Saved '+e.name+': '+f1(scores(e).total)+' / 100');D=blank(e);renderForm();window.scrollTo(0,0)};
+$('resetBtn').onclick=()=>{D=blank(D);renderForm();window.scrollTo(0,0)};
+
+/* board */
+function groups(){const m=new Map();
+  for(const e of S.entries){const key=e.name.trim().toLowerCase()+'|'+e.year.trim();if(!m.has(key))m.set(key,{key,name:e.name.trim(),year:e.year.trim(),flight:e.flight.trim(),job:e.job.trim(),list:[]});m.get(key).list.push(e)}
+  return[...m.values()].map(g=>{const rs=g.list.map(scores);for(const k of[...ALL,'total'])g[k]=rs.reduce((s,r)=>s+r[k],0)/rs.length;
+    const tt=rs.map(r=>r.total);g.gap=Math.max(...tt)-Math.min(...tt);return g})}
+let FY='',FF='';
+function renderBoard(){
+  const all=groups(),years=[...new Set(all.map(g=>g.year).filter(Boolean))].sort(),fls=[...new Set(all.map(g=>g.flight).filter(Boolean))].sort();
+  if(FY&&!years.includes(FY))FY='';if(FF&&!fls.includes(FF))FF='';
+  const inYear=all.filter(g=>!FY||g.year===FY),rows=inYear.filter(g=>!FF||g.flight===FF).sort((a,b)=>b.total-a.total);
+  let h=`<div class="page-head"><h1>Board</h1><p>${all.length} cadet${all.length===1?'':'s'} scored. Rank within one class year.</p></div>
+  <div class="toolbar">
+   <select class="select" id="fy" style="width:auto" aria-label="Class year"><option value="">All years</option>${years.map(y=>`<option${y===FY?' selected':''}>${esc(y)}</option>`).join('')}</select>
+   <select class="select" id="ff" style="width:auto" aria-label="Flight"><option value="">All flights</option>${fls.map(y=>`<option${y===FF?' selected':''}>${esc(y)}</option>`).join('')}</select>
+   <span class="spacer"></span>
+   <button class="btn btn-outline btn-sm" data-a="imp">Import files</button><button class="btn btn-outline btn-sm" data-a="exp">Export file</button><button class="btn btn-ghost btn-sm" data-a="csv">CSV</button>
+   <button class="btn btn-ghost btn-sm" data-a="demo">Example</button><button class="btn btn-ghost btn-sm danger" data-a="clear">Clear all</button></div>`;
+  if(!all.length){h+=`<div class="group pad"><p class="t-muted">No scores yet. Score a cadet, import flight files, or load the example.</p></div>`;$('v-board').innerHTML=h;return}
+  const avg=a=>a.reduce((s,g)=>s+g.total,0)/(a.length||1),overall=avg(inYear);
+  const byF=fls.map(f=>{const a=inYear.filter(g=>g.flight===f);return{f,n:a.length,avg:avg(a)}}).filter(x=>x.n);
+  h+=`<section class="section"><div class="section-head"><h3>Flight check${FY?' · '+esc(FY):''}</h3><span class="count">Class average ${f1(overall)}</span></div><div class="table-wrap"><table><thead><tr><th>Flight</th><th class="num">Cadets</th><th class="num">Average</th><th class="num">vs class</th><th>Status</th></tr></thead><tbody>`+
+    byF.map(x=>{const d=x.avg-overall,fl=x.n>=3&&Math.abs(d)>=8;return`<tr><td>${esc(x.f)}</td><td class="num">${x.n}</td><td class="num">${f1(x.avg)}</td><td class="num">${d>=0?'+':''}${f1(d)}</td><td>${fl?'<span class="chip" data-tone="warn">Check: rater may be '+(d>0?'generous':'strict')+'</span>':x.n<3?'<span class="t-muted">Too few to judge</span>':'<span class="chip" data-tone="ok">In line</span>'}</td></tr>`}).join('')+`</tbody></table></div></section>`;
+  h+=`<section class="section"><div class="section-head"><h3>Ranking</h3><span class="count">${rows.length}</span><span class="actions t-small t-muted">Click a row for each rater</span></div><div class="table-wrap"><table><thead><tr><th class="num">#</th><th>Cadet</th><th>Year</th><th>Flight</th><th>Job</th><th class="num">Duty</th><th class="num">Lead</th><th class="num">Out</th><th class="num">Pres</th><th class="num">Total</th><th>Raters</th></tr></thead><tbody>`;
+  rows.forEach((g,i)=>{
+    h+=`<tr class="click" data-k="${esc(g.key)}"><td class="num">${i+1}</td><td><b>${esc(g.name)}</b></td><td>${esc(g.year)}</td><td>${esc(g.flight)}</td><td>${esc(g.job)}</td><td class="num">${f1(g.duty)}</td><td class="num">${f1(g.lead)}</td><td class="num">${f1(g.out)}</td><td class="num">${f1(g.pres)}</td><td class="num" style="white-space:nowrap"><span class="bar" aria-hidden="true"><i style="width:${Math.max(0,Math.min(100,g.total)).toFixed(1)}%"></i></span><b>${f1(g.total)}</b></td><td>${g.list.length}${g.gap>=10?' <span class="chip" data-tone="warn">Gap '+f1(g.gap)+'</span>':''}</td></tr>`;
+    if(openKey===g.key)h+=`<tr class="detail"><td></td><td colspan="10">`+g.list.map(e=>{const r=scores(e);return`<div class="toolbar" style="margin:4px 0"><span>Rater <b>${esc(e.rater)}</b>: <span class="num">${f1(r.total)}</span> <span class="t-muted num">(Duty ${f1(r.duty)}, Lead ${f1(r.lead)}, Out ${f1(r.out)}, Pres ${f1(r.pres)})</span></span><span class="spacer"></span><button class="btn btn-outline btn-xs" data-edit="${esc(e.id)}">Edit</button><button class="btn btn-ghost btn-xs danger" data-del="${esc(e.id)}">Delete</button></div>`}).join('')+`</td></tr>`});
+  h+=`</tbody></table></div></section>`;
+  $('v-board').innerHTML=h;
+}
+function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+const today=()=>new Date().toISOString().slice(0,10);
+$('v-board').addEventListener('change',e=>{if(e.target.id==='fy'){FY=e.target.value;renderBoard()}if(e.target.id==='ff'){FF=e.target.value;renderBoard()}});
+$('v-board').addEventListener('click',e=>{const b=e.target.closest('button'),a=b&&b.dataset.a;
+  if(b&&b.dataset.edit){const x=S.entries.find(v=>v.id===b.dataset.edit);if(x){D=clean(x);show('score')}return}
+  if(b&&b.dataset.del){const x=S.entries.find(v=>v.id===b.dataset.del);if(x&&confirm('Delete '+x.rater+'’s score for '+x.name+'?')){S.entries=S.entries.filter(v=>v!==x);save();renderBoard()}return}
+  if(a==='exp'){const list=S.entries.filter(x=>(!FY||x.year.trim()===FY)&&(!FF||x.flight.trim()===FF));if(!list.length){toast('Nothing to export');return}
+    dl('strat-scores-'+(FF||'all').replace(/\W+/g,'-')+'-'+today()+'.json',JSON.stringify({app:'strat-scorer',v:1,weights:S.weights,depth:S.depth,entries:list},null,1),'application/json');return}
+  if(a==='imp'){$('file').value='';$('file').click();return}
+  if(a==='csv'){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const rows=groups().filter(g=>(!FY||g.year===FY)&&(!FF||g.flight===FF)).sort((x,y)=>y.total-x.total);if(!rows.length){toast('Nothing to export');return}
+    dl('strat-board-'+today()+'.csv','Rank,Cadet,Year,Flight,Job,Duty,Leadership,OutOfSquadron,Presence,Total,Raters,RaterGap\r\n'+rows.map((g,i)=>[i+1,q(g.name),q(g.year),q(g.flight),q(g.job),f1(g.duty),f1(g.lead),f1(g.out),f1(g.pres),f1(g.total),g.list.length,f1(g.gap)].join(',')).join('\r\n'),'text/csv');return}
+  if(a==='demo'){if(S.entries.length&&!confirm('Add 9 made-up example cadets to the scores already here?'))return;S.entries.push(...demo());save();renderBoard();toast('Example loaded (made-up cadets)');return}
+  if(a==='clear'){if(S.entries.length&&confirm('Delete all '+S.entries.length+' scores in this browser? Export a file first if you need them.')){S.entries=[];save();renderBoard()}return}
+  const tr=e.target.closest('tr.click');if(tr){openKey=openKey===tr.dataset.k?null:tr.dataset.k;renderBoard()}});
+$('file').addEventListener('change',async e=>{let add=0,upd=0,bad=0;
+  for(const f of e.target.files){try{const j=JSON.parse(await f.text());if(!j||j.app!=='strat-scorer'||!Array.isArray(j.entries))throw 0;
+    for(const raw of j.entries){const c=clean(raw);if(!c||!c.name.trim()){bad++;continue}const i=S.entries.findIndex(x=>x.id===c.id);if(i>=0){S.entries[i]=c;upd++}else{S.entries.push(c);add++}}}catch(_){bad++}}
+  save();renderBoard();toast(add+' added, '+upd+' updated'+(bad?', '+bad+' skipped':''))});
+function demo(){const mk=(name,flight,job,rater,du,le,ou,pr)=>{const e=blank();e.id='demo'+Math.random().toString(36).slice(2,9);Object.assign(e,{name,year:'2029',flight,job,rater});
+    const fillB=(k,arr)=>arr.forEach((d,i)=>{e.bullets[k][i]={t:'',d}});fillB('duty',du);fillB('lead',le);fillB('out',ou);e.pres=PRES.map((_,i)=>i<pr);return e};
+  return[
+   mk('Example, Avery','Alpha','Supervisor','Rater A',[[4,3,3],[2,1,2]],[[3,2,2],[2,0,1]],[[1,3,2]],5),
+   mk('Example, Blake','Alpha','Supervisor','Rater A',[[2,1,2],[1,1,1]],[[2,1,1]],[[1,1,0]],4),
+   mk('Example, Casey','Alpha','Element Clerk','Rater A',[[1,1,0]],[[1,2,0]],[[2,1,2],[1,2,2]],3),
+   mk('Example, Devon','Bravo','Supervisor','Rater B',[[4,2,3],[3,2,2],[2,1,2]],[[4,3,3],[3,2,2]],[[3,2,2],[1,3,3]],5),
+   mk('Example, Emery','Bravo','Supervisor','Rater B',[[3,2,2],[2,1,2],[2,1,2]],[[3,3,2],[2,2,2]],[[2,2,2]],5),
+   mk('Example, Finley','Bravo','Supervisor','Rater B',[[3,1,2],[2,1,2]],[[3,2,2],[2,1,1]],[[1,2,2]],4),
+   mk('Example, Gray','Staff','Sq Public Affairs','Rater C',[[2,1,2],[3,1,3]],[[2,3,1]],[[1,1,1]],4),
+   mk('Example, Harper','Staff','Sq Academics','Rater C',[[1,1,1]],[[1,1,0]],[[2,2,2]],5),
+   mk('Example, Avery','Alpha','Supervisor','Rater B',[[3,2,2],[2,1,1]],[[2,1,1]],[[1,3,2]],4)]}
+renderScale();
+</script>
+</body>
+</html>
