@@ -1,0 +1,8 @@
+.claude/
+*.pdf
+*.sql
+*.json
+*.csv
+AGENTS.md
+HANDOFF.md
+CLAUDE.md
