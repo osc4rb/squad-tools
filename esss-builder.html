@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>eSSS Builder</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="ui.css">
+<link rel="stylesheet" href="site.css">
+<style>
+.route { display: grid; grid-template-columns: 24px minmax(0,1fr) 112px 32px; gap: 8px; align-items: center; }
+.route + .route { margin-top: 8px; }
+.leg { display: grid; grid-template-columns: 150px minmax(0,1.3fr) 116px minmax(0,1.3fr) 116px minmax(0,1fr) 32px; gap: 8px; align-items: center; }
+.leg + .leg { margin-top: 8px; }
+@media (max-width: 860px) { .leg { grid-template-columns: 1fr 1fr; padding-top: 15px; border-top: 1px solid var(--border); } .leg + .leg { margin-top: 15px; } .leg:first-child { border-top: 0; padding-top: 0; } .leg .btn-icon { justify-self: end; grid-column: 2; } }
+.formfile { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<header class="site-header"><div class="site-wrap">
+  <a class="site-logo" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
+  <nav class="site-nav" aria-label="Site">
+    <a href="./">Home</a><a href="esss-builder.html" aria-current="page">eSSS</a><a href="strat-scorer.html">Strats</a><a href="bullets/">Bullets</a>
+  </nav>
+  <button class="site-theme" id="themeBtn" type="button" aria-label="Switch light or dark">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>
+  </button>
+</div></header>
+<header class="topbar"><div class="in">
+  <span class="name">eSSS Builder</span>
+  <span class="spacer"></span>
+  <div class="seg" id="seg" role="group" aria-label="Request type">
+    <button type="button" data-type="travel" aria-pressed="true">Travel or pass</button><button type="button" data-type="other" aria-pressed="false">Other</button>
+  </div>
+</div></header>
+
+<main id="form">
+  <div class="page-head"><h1>Staff Summary Sheet</h1><p>Fills the CS-37 eSSS (AF IMT 1768) for you. Nothing leaves this computer.</p></div>
+
+  <section class="section">
+    <div class="section-head"><h3>Blank form</h3><span class="actions" id="formState"></span></div>
+    <div class="group pad formfile">
+      <button class="btn btn-outline btn-sm" id="pickForm" type="button">Choose blank eSSS PDF</button>
+      <span class="t-muted" id="formName">Pick the blank eSSS your squadron sent. It is remembered in this browser only.</span>
+      <button class="btn btn-ghost btn-xs" id="forgetForm" type="button" hidden>Forget it</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h3>You</h3></div>
+    <div class="group pad">
+      <div class="grid">
+        <label class="field"><span>First name</span><input class="input" data-f="first" autocomplete="off"></label>
+        <label class="field"><span>Middle initial</span><input class="input" data-f="mi" maxlength="1" autocomplete="off"></label>
+        <label class="field"><span>Last name</span><input class="input" data-f="last" autocomplete="off"></label>
+        <label class="field"><span>Class</span><select class="select" data-f="rank"><option>C1C</option><option>C2C</option><option>C3C</option><option>C4C</option></select></label>
+      </div>
+      <div class="grid">
+        <label class="field"><span>Squadron</span><input class="input" data-f="sq" inputmode="numeric" autocomplete="off"></label>
+        <label class="field"><span>Phone</span><input class="input" data-f="phone" inputmode="tel" autocomplete="off"></label>
+        <label class="field"><span>Date completed</span><input class="input" type="date" data-f="date"></label>
+        <label class="field"><span>Suspense</span><input class="input" type="date" data-f="suspense"><small>When you need the answer</small></label>
+      </div>
+      <label class="field" style="margin-top:12px"><span>Subject</span><input class="input" data-f="subject" placeholder="Special Pass Request" autocomplete="off"></label>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h3>Routing</h3><span class="count" id="routeCount"></span><span class="actions"><button class="btn btn-ghost btn-sm" id="addRoute" type="button">Add a line</button></span></div>
+    <p class="lead">Who it goes to, in order, and what each one does. The form has 10 lines. Saved for next time.</p>
+    <div class="group pad" id="routes"></div>
+  </section>
+
+  <div id="travelBox">
+    <section class="section">
+      <div class="section-head"><h3>1. Purpose and 2. Background</h3></div>
+      <div class="group pad">
+        <label class="field"><span>Permission to</span><input class="input" data-f="pReason" placeholder="attend my sister's wedding" autocomplete="off"><small>Finishes "To request permission to ___"</small></label>
+        <div class="grid">
+          <label class="field"><span>First day</span><input class="input" type="date" data-f="start"></label>
+          <label class="field"><span>Last day</span><input class="input" type="date" data-f="end"></label>
+          <label class="field"><span>Travel to</span><input class="input" data-f="loc" placeholder="Denver, CO" autocomplete="off"></label>
+          <label class="field"><span>For</span><input class="input" data-f="bReason" placeholder="my sister's wedding" autocomplete="off"></label>
+        </div>
+        <label class="field" style="margin-top:12px"><span>Why it matters</span><textarea class="textarea" data-f="just" rows="2" placeholder="I am a member of the wedding party and my family cannot reschedule"></textarea><small>Finishes "Additionally, ___"</small></label>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h3>3. Itinerary</h3><span class="actions"><button class="btn btn-ghost btn-sm" id="addLeg" type="button">Add a leg</button></span></div>
+      <p class="lead">One line per leg: date, depart from, time, arrive at, time, how.</p>
+      <div class="group pad" id="legs"></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><h3>4. Considerations</h3></div>
+      <div class="group pad">
+        <div class="grid">
+          <label class="field"><span>School days missed</span><input class="input" data-f="missed" inputmode="numeric" autocomplete="off"></label>
+          <label class="field"><span>Standing</span><select class="select" data-f="standing"><option>good</option><option>poor</option></select></label>
+          <label class="field"><span>Probation</span><select class="select" data-f="prob"><option>not on</option><option>on</option></select></label>
+        </div>
+        <div class="grid">
+          <label class="field"><span>Cumulative GPA</span><input class="input" data-f="gpa" inputmode="decimal" autocomplete="off"></label>
+          <label class="field"><span>Cumulative MPA</span><input class="input" data-f="mpa" inputmode="decimal" autocomplete="off"></label>
+          <label class="field"><span>Cumulative PEA</span><input class="input" data-f="pea" inputmode="decimal" autocomplete="off"></label>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="section" id="otherBox" hidden>
+    <div class="section-head"><h3>Paragraphs</h3></div>
+    <div class="group pad">
+      <label class="field"><span>1. Purpose</span><textarea class="textarea" data-f="purpose" rows="2" placeholder="To request permission to ..."></textarea><small>One sentence</small></label>
+      <label class="field"><span>2. Background</span><textarea class="textarea" data-f="background" rows="3"></textarea></label>
+      <label class="field"><span>3. Discussion</span><textarea class="textarea" data-f="discussion" rows="5"></textarea></label>
+      <label class="field"><span>4. Considerations</span><textarea class="textarea" data-f="considerations" rows="3"></textarea></label>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h3>5. Recommendation and attachments</h3></div>
+    <div class="group pad">
+      <label class="field"><span>Recommendation</span><input class="input" data-f="rec" autocomplete="off"></label>
+      <label class="check-row" style="margin-top:12px"><input class="check" type="checkbox" data-f="afcw99"><span>Attach AFCW-99, Request to Exceed Limits/Special Pass</span></label>
+      <label class="field" style="margin-top:12px"><span>Other attachments</span><textarea class="textarea" data-f="att" rows="2"></textarea><small>One per line</small></label>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h3>Checks</h3><span class="actions" id="checkSum"></span></div>
+    <div class="group pad"><ul class="checks" id="checks"></ul></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h3>What goes in each box</h3></div>
+    <p class="lead">The PDF gets exactly this. Copy a box by hand only if you need to.</p>
+    <div class="group" id="boxes"></div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="site-footer-1"><div class="site-wrap"><ul>
+    <li><a href="esss-builder.html">eSSS Builder</a></li><li><a href="strat-scorer.html">Strat Scorer</a></li><li><a href="bullets/">Falcon Bullets</a></li>
+  </ul></div></div>
+  <div class="site-footer-2"><div class="site-wrap"><img src="assets/cs37-patch.png" alt="">Cadet Squadron 37</div></div>
+</footer>
+
+<div class="actionbar"><div class="in">
+  <span class="t-muted" id="barMsg"></span>
+  <span class="spacer"></span>
+  <button class="btn btn-outline btn-sm" id="newBtn" type="button">Start over</button>
+  <button class="btn btn-primary btn-sm" id="fillBtn" type="button">Fill the PDF</button>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="formFile" accept="application/pdf,.pdf" hidden>
+
+<script src="esss-pdf.js"></script>
+<script>
+const KEY='esssBuilder.v2';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const t=s=>String(s==null?'':s).trim();
+const ACTIONS=['Coord','Appr','Sig','Info'];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const PROFILE=['first','mi','last','rank','sq','phone','gpa','mpa','pea','standing','prob','routes'];
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function leg(o){return Object.assign({d:'',from:'',ft:'',to:'',tt:'',mode:''},o||{})}
+function fresh(keep){return Object.assign({type:'travel',first:'',mi:'',last:'',rank:'C3C',sq:'37',phone:'',date:iso(new Date()),suspense:'',subject:'',
+  routes:[['','Coord'],['','Coord'],['','Appr']],
+  pReason:'',start:'',end:'',loc:'',bReason:'',just:'',legs:[leg({from:'USAFA, CO'}),leg({to:'USAFA, CO'})],
+  missed:'',standing:'good',prob:'not on',gpa:'',mpa:'',pea:'',
+  purpose:'',background:'',discussion:'',considerations:'',
+  rec:'Squadron Commander Approval.',afcw99:false,att:''},keep||{})}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&typeof j==='object'){const d=fresh();
+  for(const k in d){if(k==='routes'||k==='legs'||k==='afcw99')continue;if(typeof j[k]==='string')d[k]=j[k]}
+  d.afcw99=!!j.afcw99;if(d.type!=='other')d.type='travel';
+  if(Array.isArray(j.routes))d.routes=j.routes.filter(Array.isArray).slice(0,10).map(r=>[String(r[0]||''),ACTIONS.includes(r[1])?r[1]:'Coord']);
+  if(Array.isArray(j.legs)&&j.legs.length)d.legs=j.legs.slice(0,12).map(l=>{const o=leg();for(const k in o)if(l&&typeof l[k]==='string')o[k]=l[k];return o});
+  return d}}catch(e){}return fresh()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+let D=load(),VALS=[],FORM=null;
+function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove('show'),2400)}
+
+/* theme */
+$('themeBtn').onclick=()=>{const r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}};
+
+/* ---------- text ---------- */
+const parts=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?{y:m[1],m:+m[2]-1,d:+m[3]}:null};
+function fmtD(s){const p=parts(s);return p?p.d+' '+MON[p.m]+' '+p.y:''}
+function fmtShort(s){const p=parts(s);return p?p.d+' '+MON[p.m]:''}
+function range(a,b){const p=parts(a),q=parts(b);if(!p)return'';if(!q||a===b)return fmtD(a);
+  if(p.y===q.y&&p.m===q.m)return p.d+'-'+q.d+' '+MON[p.m]+' '+p.y;
+  if(p.y===q.y)return p.d+' '+MON[p.m]+' - '+q.d+' '+MON[q.m]+' '+p.y;return fmtD(a)+' - '+fmtD(b)}
+const hhmm=s=>t(s).replace(':','');
+const noDot=s=>t(s).replace(/[.\s]+$/,'');
+let MISSING=0;
+const ph=(v,label)=>{v=noDot(v);if(v)return v;MISSING++;return'('+label+')'};
+const fullName=()=>[t(D.first),t(D.mi)?t(D.mi).toUpperCase()+'.':'',t(D.last)].filter(Boolean).join(' ').toUpperCase();
+function summary(){
+  MISSING=0;const L=[];
+  if(D.type==='travel'){
+    const dates=range(D.start,D.end);if(!dates)MISSING++;
+    L.push('1.  PURPOSE: To request permission to '+ph(D.pReason,'reason')+' on '+(dates||'(date)')+'.','');
+    L.push('2.  BACKGROUND: I am requesting permission to travel to '+ph(D.loc,'location')+' for '+ph(D.bReason,'reason')+'. Additionally, '+ph(D.just,'supporting justification')+'.','');
+    L.push('3.  DISCUSSION: My travel itinerary is as follows:');
+    for(const l of D.legs){const date=fmtShort(l.d);if(!date)MISSING++;const home=/^usafa/i.test(t(l.to));
+      L.push('- '+(date||'(dd Mon)')+' Depart '+ph(l.from,'location')+' at '+(hhmm(l.ft)||(MISSING++,'(time)'))+' -- Arrive '+ph(l.to,'location')+(home?' by ':' at ')+(hhmm(l.tt)||(MISSING++,'(time)'))+'; '+ph(l.mode,'mode of transportation')+'.')}
+    L.push('');
+    const n=t(D.missed);
+    L.push('4.  CONSIDERATIONS: I will miss '+(n===''?(MISSING++,'(#)'):n)+' day'+(n==='1'?'':'s')+' of school. I am a cadet in '+D.standing+' standing, I am '+D.prob+' any probation. My cumulative GPA is '+ph(D.gpa,'#.##')+', my cumulative MPA is '+ph(D.mpa,'#.##')+', and my cumulative PEA is '+ph(D.pea,'#.##')+'.','');
+  }else{
+    L.push('1.  PURPOSE: '+ph(D.purpose,'purpose')+'.','');
+    L.push('2.  BACKGROUND: '+ph(D.background,'background')+'.','');
+    L.push('3.  DISCUSSION: '+ph(D.discussion,'discussion')+'.','');
+    L.push('4.  CONSIDERATIONS: '+ph(D.considerations,'considerations')+'.','');
+  }
+  L.push('5.  RECOMMENDATION: '+ph(D.rec,'recommendation')+'.','');
+  const att=[];if(D.afcw99)att.push('AFCW-99, Request to Exceed Limits/Special Pass.');
+  for(const a of t(D.att).split(/\r?\n/).map(t).filter(Boolean))att.push(a);
+  if(att.length){L.push('Attachments:');att.forEach((a,i)=>L.push((i+1)+'. '+a));L.push('')}
+  L.push('V/R','//SIGNED//',(fullName()||(MISSING++,'(FIRST M. LAST)'))+', '+D.rank+', USAFA','Cadet Squadron '+ph(D.sq,'##'),'Phone #'+(t(D.phone).replace(/\D/g,'')||(MISSING++,'(1234567890)')));
+  return L.join('\n');
+}
+function fileName(){const d=range(D.start,D.end).replace(/\s+/g,'').toUpperCase();
+  return[t(D.last).toUpperCase().replace(/\W+/g,'')||'LAST',t(D.first).toUpperCase().replace(/\W+/g,'')||'FIRST',(D.type==='travel'&&d)?d:'DATES','eSSS'].join('_')+'.pdf'}
+const initials=()=>((t(D.first)[0]||'')+(t(D.last)[0]||'')).toUpperCase();
+function routing(){return D.routes.filter(r=>t(r[0])).slice(0,10)}
+function boxes(){const rt=routing();
+  return[['To / Action',rt.map((r,i)=>(i+1)+'. '+t(r[0])+': '+r[1]).join('\n')],
+   ['Action officer and grade',t(D.last)?t(D.last)+', '+D.rank:''],
+   ['Symbol',t(D.sq)?'AFCW/CS-'+t(D.sq):''],['Phone',t(D.phone)],['Typist’s initials',initials()],
+   ['Suspense date',fmtD(D.suspense)],['Subject',t(D.subject)],['Date',fmtD(D.date)],
+   ['Summary',summary()],['File name',fileName()]]}
+/* field names read from the real form's XFA template */
+function pdfValues(){const v={},rt=routing();
+  for(let i=0;i<10;i++){const col=i<5?'ONE':'TWO',sfx=(i%5)?'_'+(i%5+1):'',r=rt[i];v['TO'+col+sfx]=r?t(r[0]):'';v['ACT'+col+sfx]=r?r[1]:''}
+  v.SURNAME=t(D.last)?t(D.last)+', '+D.rank:'';v.SYMBOL=t(D.sq)?'AFCW/CS-'+t(D.sq):'';v.PHONE=t(D.phone);v.FIELD1=initials();
+  v.CalDt=D.suspense||'';v.CalDtB=D.date||'';v.SUBJECT=t(D.subject);v.SUMMARY=summary();return v}
+function summaryLines(s){return s.split('\n').reduce((n,l)=>n+Math.max(1,Math.ceil(l.length/115)),0)}
+function checks(){
+  const c=[],add=(ok,msg)=>c.push([!!ok,msg]),today=iso(new Date());
+  add(FORM,FORM?'Blank form chosen':'Choose the blank eSSS PDF');
+  add(t(D.first)&&t(D.last)&&t(D.sq)&&t(D.phone),'Name, squadron and phone filled in');
+  add(t(D.subject),'Subject filled in');
+  const dep=D.type==='travel'?D.start:'';
+  add(D.suspense&&D.suspense>=today&&(!dep||D.suspense<=dep),!D.suspense?'Suspense date set':D.suspense<today?'Suspense date is in the past':dep&&D.suspense>dep?'Suspense is after your first day of travel':'Suspense date set');
+  const rt=routing(),dec=rt.filter(r=>r[1]==='Appr'||r[1]==='Sig').length;
+  add(dec===1,!rt.length?'Routing has at least one line':dec===0?'Mark one routing line Appr or Sig':dec>1?'More than one routing line is Appr or Sig':'Routing has one approver');
+  if(D.type==='travel'){
+    add(D.start&&(!D.end||D.end>=D.start),D.start&&D.end&&D.end<D.start?'Last day is before the first day':'Travel dates set');
+    const L=D.legs,ds=L.map(l=>l.d).filter(Boolean);
+    add(L.length>=2&&/^usafa/i.test(t(L[0].from))&&/^usafa/i.test(t(L[L.length-1].to)),'Itinerary starts and ends at USAFA');
+    add(ds.length===L.length&&ds.every((d,i)=>!i||d>=ds[i-1]),ds.length<L.length?'Every leg has a date':'Legs in date order');
+    add(!D.start||!ds.length||(ds[0]>=D.start&&(!D.end||ds[ds.length-1]<=D.end)),'Leg dates inside the travel dates');
+  }
+  const s=summary();
+  add(MISSING===0,MISSING?MISSING+' blank'+(MISSING>1?'s':'')+' still in (parentheses) in the Summary':'No blanks left in the Summary');
+  add(summaryLines(s)<=38,'Summary fits the box');
+  return c;
+}
+function refresh(){VALS=boxes();
+  $('boxes').innerHTML=VALS.map(([n,v],i)=>`<div class="row-item box-row"><span class="what">${esc(n)}</span><span class="val${n==='Summary'?' num':''}">${v?esc(v):'<span class="t-faint">Not filled in yet</span>'}</span>${v?`<button class="btn btn-ghost btn-xs" type="button" data-copy="${i}">Copy</button>`:''}</div>`).join('');
+  const c=checks(),left=c.filter(x=>!x[0]).length;
+  $('checks').innerHTML=c.map(([ok,m])=>`<li><span>${esc(m)}</span><span class="chip" data-tone="${ok?'ok':'warn'}">${ok?'Done':'To do'}</span></li>`).join('');
+  $('checkSum').innerHTML=left?`<span class="chip" data-tone="warn">${left} to do</span>`:'<span class="chip" data-tone="ok">Ready</span>';
+  $('barMsg').textContent=left?left+' check'+(left>1?'s':'')+' left':'Ready to fill';
+  $('routeCount').textContent=routing().length+' of 10';
+  save()}
+function renderRoutes(){$('routes').innerHTML=D.routes.map((r,i)=>`<div class="route"><span class="t-faint num">${i+1}</span><input class="input" data-r="${i}" value="${esc(r[0])}" placeholder="Office or position" aria-label="To, line ${i+1}" autocomplete="off"><select class="select" data-ra="${i}" aria-label="Action, line ${i+1}">${ACTIONS.map(a=>`<option${a===r[1]?' selected':''}>${a}</option>`).join('')}</select><button class="btn btn-ghost btn-sm btn-icon" type="button" data-rx="${i}" aria-label="Remove line ${i+1}">&times;</button></div>`).join('')||'<span class="t-muted">No lines yet.</span>';$('addRoute').hidden=D.routes.length>=10}
+function renderLegs(){$('legs').innerHTML=D.legs.map((l,i)=>`<div class="leg"><input class="input" type="date" data-leg="${i}" data-k="d" value="${esc(l.d)}" aria-label="Leg ${i+1} date"><input class="input" data-leg="${i}" data-k="from" value="${esc(l.from)}" placeholder="Depart from" aria-label="Leg ${i+1} depart from" autocomplete="off"><input class="input" type="time" data-leg="${i}" data-k="ft" value="${esc(l.ft)}" aria-label="Leg ${i+1} depart time"><input class="input" data-leg="${i}" data-k="to" value="${esc(l.to)}" placeholder="Arrive at" aria-label="Leg ${i+1} arrive at" autocomplete="off"><input class="input" type="time" data-leg="${i}" data-k="tt" value="${esc(l.tt)}" aria-label="Leg ${i+1} arrive time"><input class="input" data-leg="${i}" data-k="mode" value="${esc(l.mode)}" placeholder="POV, flight" aria-label="Leg ${i+1} how" autocomplete="off"><button class="btn btn-ghost btn-sm btn-icon" type="button" data-lx="${i}" aria-label="Remove leg ${i+1}">&times;</button></div>`).join('');$('addLeg').hidden=D.legs.length>=12}
+function fill(){for(const el of document.querySelectorAll('[data-f]')){if(el.type==='checkbox')el.checked=!!D[el.dataset.f];else el.value=D[el.dataset.f]||''}
+  for(const b of $('seg').children)b.setAttribute('aria-pressed',String(b.dataset.type===D.type));
+  $('travelBox').hidden=D.type!=='travel';$('otherBox').hidden=D.type!=='other';
+  renderRoutes();renderLegs();refresh()}
+
+$('seg').addEventListener('click',e=>{const k=e.target.dataset.type;if(k&&k!==D.type){D.type=k;fill()}});
+function onInput(e){const el=e.target,ds=el.dataset;
+  if(ds.f)D[ds.f]=el.type==='checkbox'?el.checked:el.value;
+  else if(ds.r!==undefined)D.routes[+ds.r][0]=el.value;
+  else if(ds.ra!==undefined)D.routes[+ds.ra][1]=el.value;
+  else if(ds.leg!==undefined)D.legs[+ds.leg][ds.k]=el.value;
+  else return;refresh()}
+$('form').addEventListener('input',onInput);$('form').addEventListener('change',onInput);
+$('form').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;const ds=b.dataset;
+  if(ds.rx!==undefined){D.routes.splice(+ds.rx,1);renderRoutes();refresh()}
+  if(ds.lx!==undefined){D.legs.splice(+ds.lx,1);renderLegs();refresh()}
+  if(ds.copy!==undefined){const s=VALS[+ds.copy][1];try{await navigator.clipboard.writeText(s)}catch(_){const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(x){}ta.remove()}toast('Copied: '+VALS[+ds.copy][0])}});
+$('addRoute').onclick=()=>{if(D.routes.length<10){D.routes.push(['','Coord']);renderRoutes();refresh()}};
+$('addLeg').onclick=()=>{const n=D.legs.length,last=D.legs[n-1],home=last&&/^usafa/i.test(t(last.to)),at=home?n-1:n,prev=D.legs[at-1];
+  D.legs.splice(at,0,leg(prev?{d:prev.d,from:prev.to}:{}));renderLegs();refresh()};
+$('newBtn').onclick=()=>{if(!confirm('Clear this request? Your name, phone, scores and routing are kept.'))return;const keep={type:D.type};for(const k of PROFILE)keep[k]=D[k];D=fresh(keep);fill()};
+
+/* ---------- the blank form: kept in this browser (IndexedDB), never uploaded ---------- */
+function idb(mode,fn){return new Promise((res,rej)=>{let r;try{r=indexedDB.open('esssBuilder',1)}catch(e){return rej(e)}
+  r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onerror=()=>rej(r.error);
+  r.onsuccess=()=>{const tx=r.result.transaction('files',mode),st=tx.objectStore('files'),q=fn(st);tx.oncomplete=()=>res(q&&q.result);tx.onerror=()=>rej(tx.error)}})}
+function showForm(){$('formName').textContent=FORM?FORM.name:'Pick the blank eSSS your squadron sent. It is remembered in this browser only.';
+  $('forgetForm').hidden=!FORM;$('pickForm').textContent=FORM?'Choose a different PDF':'Choose blank eSSS PDF';
+  $('formState').innerHTML=FORM?'<span class="chip" data-tone="ok">Ready</span>':'<span class="chip" data-tone="warn">Needed</span>';refresh()}
+$('pickForm').onclick=()=>{$('formFile').value='';$('formFile').click()};
+$('formFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{const bytes=new Uint8Array(await f.arrayBuffer());await EsssPdf.readForm(bytes);FORM={name:f.name,bytes};
+    try{await idb('readwrite',s=>s.put(FORM,'blank'))}catch(_){}
+    showForm();toast('Blank form ready')}catch(err){toast(err.message||'That PDF could not be read')}});
+$('forgetForm').onclick=async()=>{FORM=null;try{await idb('readwrite',s=>s.delete('blank'))}catch(_){}showForm()};
+$('fillBtn').onclick=async()=>{
+  if(!FORM){toast('Choose the blank eSSS PDF first');$('pickForm').focus();return}
+  const left=checks().filter(x=>!x[0]).length;
+  if(left&&!confirm(left+' check'+(left>1?'s are':' is')+' not done. Fill the PDF anyway?'))return;
+  try{const out=await EsssPdf.fill(FORM.bytes,pdfValues());
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'application/pdf'}));a.download=fileName();
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast('Saved '+fileName()+'. Open it in Acrobat to sign.')}catch(err){toast(err.message||'Could not fill the PDF')}};
+fill();
+idb('readonly',s=>s.get('blank')).then(v=>{if(v&&v.bytes){FORM=v;showForm()}else showForm()}).catch(()=>showForm());
+</script>
+</body>
+</html>
