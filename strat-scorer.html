@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strat Scorer</title>
 <link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="vendor/uswds/css/uswds.min.css">
+<link rel="stylesheet" href="cs37-theme.css">
 <link rel="stylesheet" href="ui.css">
-<link rel="stylesheet" href="site.css">
+<script src="vendor/uswds/js/uswds-init.min.js"></script>
 <style>
 .dials { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px 16px; margin-top: 12px; }
 @media (max-width: 720px) { .dials { grid-template-columns: 1fr; } }
@@ -23,15 +24,27 @@ tr.detail > td { background: var(--bg-subtle); }
 </style>
 </head>
 <body>
-<header class="site-header"><div class="site-wrap">
-  <a class="site-logo" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
-  <nav class="site-nav" aria-label="Site">
-    <a href="./">Home</a><a href="esss-builder.html">eSSS</a><a href="strat-scorer.html" aria-current="page">Strats</a><a href="bullets/">Bullets</a>
-  </nav>
-  <button class="site-theme" id="themeBtn" type="button" aria-label="Switch light or dark">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>
-  </button>
-</div></header>
+<a class="usa-skipnav" href="#main-content">Skip to main content</a>
+<div class="usa-overlay"></div>
+<header class="usa-header usa-header--basic">
+  <div class="usa-nav-container">
+    <div class="usa-navbar">
+      <div class="usa-logo">
+        <em class="usa-logo__text"><a href="./" title="CS-37"><img class="cs37-patch" src="assets/cs37-patch.png" alt="">CS-37</a></em>
+      </div>
+      <button type="button" class="usa-menu-btn">Menu</button>
+    </div>
+    <nav aria-label="Primary navigation" class="usa-nav">
+      <button type="button" class="usa-nav__close"><img src="vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
+      <ul class="usa-nav__primary usa-accordion">
+        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link"><span>Home</span></a></li>
+        <li class="usa-nav__primary-item"><a href="esss-builder.html" class="usa-nav-link"><span>eSSS</span></a></li>
+        <li class="usa-nav__primary-item"><a href="strat-scorer.html" class="usa-nav-link usa-current" aria-current="page"><span>Strats</span></a></li>
+        <li class="usa-nav__primary-item"><a href="bullets/" class="usa-nav-link"><span>Bullets</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 <header class="topbar"><div class="in">
   <span class="name">Strat Scorer</span>
   <span class="spacer"></span>
@@ -40,16 +53,29 @@ tr.detail > td { background: var(--bg-subtle); }
   </div>
 </div></header>
 
-<main>
+<main id="main-content">
   <div id="v-scale"></div>
   <div id="v-score" hidden></div>
   <div id="v-board" hidden></div>
 </main>
-<footer class="site-footer">
-  <div class="site-footer-1"><div class="site-wrap"><ul>
-    <li><a href="esss-builder.html">eSSS Builder</a></li><li><a href="strat-scorer.html">Strat Scorer</a></li><li><a href="bullets/">Falcon Bullets</a></li>
-  </ul></div></div>
-  <div class="site-footer-2"><div class="site-wrap"><img src="assets/cs37-patch.png" alt="">Cadet Squadron 37</div></div>
+<footer class="usa-footer">
+  <div class="grid-container usa-footer__return-to-top">
+    <a href="#">Return to top</a>
+  </div>
+  <div class="usa-footer__secondary-section">
+    <div class="grid-container">
+      <div class="grid-row grid-gap">
+        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
+          <div class="mobile-lg:grid-col-auto">
+            <img class="usa-footer__logo-img" src="assets/cs37-patch.png" alt="">
+          </div>
+          <div class="mobile-lg:grid-col-auto">
+            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <div class="actionbar" id="bar" hidden><div class="in">
@@ -107,7 +133,6 @@ function catScore(list){return list.map(bp).sort((a,b)=>b-a).reduce((s,v,i)=>s+v
 function scores(e){const r={};for(const k of BK)r[k]=catScore(e.bullets[k]);r.pres=e.pres.filter(Boolean).length*2;
   const wsum=ALL.reduce((s,k)=>s+(+S.weights[k]||0),0)||1;r.total=ALL.reduce((s,k)=>s+r[k]/10*(+S.weights[k]||0),0)/wsum*100;return r}
 
-$('themeBtn').onclick=()=>{const r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}};
 function show(tab){for(const b of $('tabs').children)b.setAttribute('aria-pressed',String(b.dataset.tab===tab));
   for(const v of['scale','score','board'])$('v-'+v).hidden=v!==tab;
   $('bar').hidden=tab!=='score';
@@ -249,5 +274,6 @@ function demo(){const mk=(name,flight,job,rater,du,le,ou,pr)=>{const e=blank();e
    mk('Example, Avery','Alpha','Supervisor','Rater B',[[3,2,2],[2,1,1]],[[2,1,1]],[[1,3,2]],4)]}
 renderScale();
 </script>
+<script src="vendor/uswds/js/uswds.min.js"></script>
 </body>
 </html>
