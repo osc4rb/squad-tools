@@ -1,0 +1,29 @@
+/* cs37-theme.css: the only changes to the stock USWDS 3.8.1 landing-page template (vendor/uswds).
+   USWDS colour tokens swapped for the CS-37 patch colours, sampled from assets/cs37-patch.jpg:
+   navy #1a2142 replaces primary (#005ea2) and the hero photo; gold #f8d000 is the hero button. */
+
+/* header: patch in the logo, current-page bar in navy */
+.usa-logo a { display: inline-flex; align-items: center; gap: 0.5rem; }
+.usa-logo .cs37-patch { width: 40px; height: 40px; flex: none; }
+.usa-header--basic .usa-nav__link:hover::after,
+.usa-header--basic .usa-nav__primary-item > .usa-current::after { background-color: #1a2142; }
+.usa-nav__primary > .usa-nav__primary-item > a:hover,
+.usa-nav__primary > .usa-nav__primary-item > .usa-current { color: #1a2142; }
+@media (max-width: 63.99em) { .usa-nav__primary .usa-current::after { background-color: #1a2142; } }
+
+/* hero: navy instead of the stock photo; gold call to action */
+.usa-hero { background-image: none; background-color: #1a2142; }
+.usa-hero .usa-button { background-color: #f8d000; color: #1b1b1b; }
+.usa-hero .usa-button:hover { background-color: #ffffff; color: #1b1b1b; }
+
+/* dark section (graphic list) in navy */
+.usa-section--dark { background-color: #1a2142; }
+.usa-section--dark a { color: #f8d000; }
+.usa-section--dark a:hover { color: #ffffff; }
+
+/* footer logo is the round patch */
+.usa-footer__logo-img { max-width: 5rem; }
+
+/* mobile Menu button (primary) in navy */
+.usa-menu-btn, .usa-menu-btn:visited { background-color: #1a2142; }
+.usa-menu-btn:hover { background-color: #162e51; }
