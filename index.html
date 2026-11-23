@@ -1,65 +1,89 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CS-37</title>
 <link rel="icon" href="assets/favicon.png">
-<link rel="stylesheet" href="site.css">
-<style>body { margin: 0; background: var(--site-bg); }</style>
+<link rel="stylesheet" href="vendor/uswds/css/uswds.min.css">
+<link rel="stylesheet" href="cs37-theme.css">
+<script src="vendor/uswds/js/uswds-init.min.js"></script>
 </head>
 <body>
-<header class="site-header"><div class="site-wrap">
-  <a class="site-logo" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
-  <nav class="site-nav" aria-label="Site">
-    <a href="./" aria-current="page">Home</a><a href="esss-builder.html">eSSS</a><a href="strat-scorer.html">Strats</a><a href="bullets/">Bullets</a>
-  </nav>
-  <button class="site-theme" id="themeBtn" type="button" aria-label="Switch light or dark">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>
-  </button>
-</div></header>
-
-<main>
-<section class="site-hero"><div class="site-wrap">
-  <div class="site-callout">
-    <h1><span>Cadet Squadron 37</span>Squadron tools</h1>
-    <p>Staff summaries, strat scoring and accomplishment bullets.</p>
-    <a class="site-btn" href="esss-builder.html">Build an eSSS</a>
+<a class="usa-skipnav" href="#main-content">Skip to main content</a>
+<div class="usa-overlay"></div>
+<header class="usa-header usa-header--basic">
+  <div class="usa-nav-container">
+    <div class="usa-navbar">
+      <div class="usa-logo">
+        <em class="usa-logo__text"><a href="./" title="CS-37"><img class="cs37-patch" src="assets/cs37-patch.png" alt="">CS-37</a></em>
+      </div>
+      <button type="button" class="usa-menu-btn">Menu</button>
+    </div>
+    <nav aria-label="Primary navigation" class="usa-nav">
+      <button type="button" class="usa-nav__close"><img src="vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
+      <ul class="usa-nav__primary usa-accordion">
+        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link usa-current" aria-current="page"><span>Home</span></a></li>
+        <li class="usa-nav__primary-item"><a href="esss-builder.html" class="usa-nav-link"><span>eSSS</span></a></li>
+        <li class="usa-nav__primary-item"><a href="strat-scorer.html" class="usa-nav-link"><span>Strats</span></a></li>
+        <li class="usa-nav__primary-item"><a href="bullets/" class="usa-nav-link"><span>Bullets</span></a></li>
+      </ul>
+    </nav>
   </div>
-  <img class="site-hero-patch" src="assets/cs37-patch.png" alt="CS-37 patch">
-</div></section>
+</header>
 
-<section class="site-section"><div class="site-wrap">
-  <h2>Tools</h2>
-  <ul class="site-cards">
-    <li class="site-card">
-      <h3>eSSS Builder</h3>
-      <p>Fill the squadron eSSS for a pass or a trip and save the PDF for signing.</p>
-      <div class="site-card-foot"><a href="esss-builder.html">Build an eSSS</a></div>
-    </li>
-    <li class="site-card">
-      <h3>Strat Scorer</h3>
-      <p>Score strat bullets on one scale and compare them across the flight.</p>
-      <div class="site-card-foot"><a href="strat-scorer.html">Score strats</a></div>
-    </li>
-    <li class="site-card">
-      <h3>Falcon Bullets</h3>
-      <p>Log accomplishments as they happen and turn them into 715a bullets.</p>
-      <div class="site-card-foot"><a href="bullets/">Log a bullet</a></div>
-    </li>
-  </ul>
-</div></section>
+<main id="main-content">
+  <section class="usa-hero" aria-label="Introduction">
+    <div class="grid-container">
+      <div class="usa-hero__callout">
+        <h1 class="usa-hero__heading">Cadet Squadron 37</h1>
+        <a class="usa-button" href="esss-builder.html">Build an eSSS</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="usa-graphic-list usa-section usa-section--dark">
+    <div class="grid-container">
+      <div class="usa-graphic-list__row grid-row grid-gap">
+        <div class="usa-media-block tablet:grid-col">
+          <div class="usa-media-block__body">
+            <h2 class="usa-graphic-list__heading"><a href="esss-builder.html">eSSS Builder</a></h2>
+          </div>
+        </div>
+        <div class="usa-media-block tablet:grid-col">
+          <div class="usa-media-block__body">
+            <h2 class="usa-graphic-list__heading"><a href="strat-scorer.html">Strat Scorer</a></h2>
+          </div>
+        </div>
+        <div class="usa-media-block tablet:grid-col">
+          <div class="usa-media-block__body">
+            <h2 class="usa-graphic-list__heading"><a href="bullets/">Falcon Bullets</a></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer class="site-footer">
-  <div class="site-footer-1"><div class="site-wrap"><ul>
-    <li><a href="esss-builder.html">eSSS Builder</a></li><li><a href="strat-scorer.html">Strat Scorer</a></li><li><a href="bullets/">Falcon Bullets</a></li>
-  </ul></div></div>
-  <div class="site-footer-2"><div class="site-wrap"><img src="assets/cs37-patch.png" alt="">Cadet Squadron 37</div></div>
+<footer class="usa-footer">
+  <div class="grid-container usa-footer__return-to-top">
+    <a href="#">Return to top</a>
+  </div>
+  <div class="usa-footer__secondary-section">
+    <div class="grid-container">
+      <div class="grid-row grid-gap">
+        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
+          <div class="mobile-lg:grid-col-auto">
+            <img class="usa-footer__logo-img" src="assets/cs37-patch.png" alt="">
+          </div>
+          <div class="mobile-lg:grid-col-auto">
+            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
-<script>
-document.getElementById('themeBtn').onclick=function(){var r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}};
-</script>
+<script src="vendor/uswds/js/uswds.min.js"></script>
 </body>
 </html>
