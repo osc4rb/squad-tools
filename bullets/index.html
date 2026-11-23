@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Falcon Bullets</title>
 <link rel="icon" href="../assets/favicon.png">
-<link rel="stylesheet" href="../site.css">
+<link rel="stylesheet" href="../vendor/uswds/css/uswds.min.css">
+<link rel="stylesheet" href="../cs37-theme.css">
+<script src="../vendor/uswds/js/uswds-init.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
@@ -302,15 +303,27 @@
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
-<header class="site-header"><div class="site-wrap">
-  <a class="site-logo" href="../"><img src="../assets/cs37-patch.png" alt="">CS-37</a>
-  <nav class="site-nav" aria-label="Site">
-    <a href="../">Home</a><a href="../esss-builder.html">eSSS</a><a href="../strat-scorer.html">Strats</a><a href="./" aria-current="page">Bullets</a>
-  </nav>
-  <button class="site-theme" id="themeBtn" type="button" aria-label="Switch light or dark">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>
-  </button>
-</div></header>
+<a class="usa-skipnav" href="#main-content">Skip to main content</a>
+<div class="usa-overlay"></div>
+<header class="usa-header usa-header--basic">
+  <div class="usa-nav-container">
+    <div class="usa-navbar">
+      <div class="usa-logo">
+        <em class="usa-logo__text"><a href="../" title="CS-37"><img class="cs37-patch" src="../assets/cs37-patch.png" alt="">CS-37</a></em>
+      </div>
+      <button type="button" class="usa-menu-btn">Menu</button>
+    </div>
+    <nav aria-label="Primary navigation" class="usa-nav">
+      <button type="button" class="usa-nav__close"><img src="../vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
+      <ul class="usa-nav__primary usa-accordion">
+        <li class="usa-nav__primary-item"><a href="../" class="usa-nav-link"><span>Home</span></a></li>
+        <li class="usa-nav__primary-item"><a href="../esss-builder.html" class="usa-nav-link"><span>eSSS</span></a></li>
+        <li class="usa-nav__primary-item"><a href="../strat-scorer.html" class="usa-nav-link"><span>Strats</span></a></li>
+        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link usa-current" aria-current="page"><span>Bullets</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
 <!-- Logged-out view -->
 <div class="auth-wrap" id="authGate" hidden>
@@ -350,7 +363,7 @@
     </div>
   </header>
 
-  <main class="layout">
+  <main class="layout" id="main-content">
     <div class="col-form">
       <form class="card" id="entryForm" autocomplete="off">
         <div class="card-head"><h2 id="formTitle">New bullet</h2><span class="sub" id="formMode">add to log</span></div>
@@ -478,11 +491,24 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<footer class="site-footer">
-  <div class="site-footer-1"><div class="site-wrap"><ul>
-    <li><a href="../esss-builder.html">eSSS Builder</a></li><li><a href="../strat-scorer.html">Strat Scorer</a></li><li><a href="./">Falcon Bullets</a></li>
-  </ul></div></div>
-  <div class="site-footer-2"><div class="site-wrap"><img src="../assets/cs37-patch.png" alt="">Cadet Squadron 37</div></div>
+<footer class="usa-footer">
+  <div class="grid-container usa-footer__return-to-top">
+    <a href="#">Return to top</a>
+  </div>
+  <div class="usa-footer__secondary-section">
+    <div class="grid-container">
+      <div class="grid-row grid-gap">
+        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
+          <div class="mobile-lg:grid-col-auto">
+            <img class="usa-footer__logo-img" src="../assets/cs37-patch.png" alt="">
+          </div>
+          <div class="mobile-lg:grid-col-auto">
+            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
 <script>
 (function () {
@@ -1287,6 +1313,4 @@
   updatePreview();
 })();
 </script>
-<script>
-document.getElementById("themeBtn").onclick=function(){var r=document.documentElement,n=r.getAttribute("data-theme")==="dark"?"light":"dark";r.setAttribute("data-theme",n);try{localStorage.setItem("theme",n)}catch(e){}};
-</script>
+<script src="../vendor/uswds/js/uswds.min.js"></script>
