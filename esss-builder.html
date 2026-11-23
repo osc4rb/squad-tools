@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>(function(){var t=null;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",t)})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>eSSS Builder</title>
 <link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="vendor/uswds/css/uswds.min.css">
+<link rel="stylesheet" href="cs37-theme.css">
 <link rel="stylesheet" href="ui.css">
-<link rel="stylesheet" href="site.css">
+<script src="vendor/uswds/js/uswds-init.min.js"></script>
 <style>
 .route { display: grid; grid-template-columns: 24px minmax(0,1fr) 112px 32px; gap: 8px; align-items: center; }
 .route + .route { margin-top: 8px; }
@@ -18,15 +19,27 @@
 </style>
 </head>
 <body>
-<header class="site-header"><div class="site-wrap">
-  <a class="site-logo" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
-  <nav class="site-nav" aria-label="Site">
-    <a href="./">Home</a><a href="esss-builder.html" aria-current="page">eSSS</a><a href="strat-scorer.html">Strats</a><a href="bullets/">Bullets</a>
-  </nav>
-  <button class="site-theme" id="themeBtn" type="button" aria-label="Switch light or dark">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg>
-  </button>
-</div></header>
+<a class="usa-skipnav" href="#form">Skip to main content</a>
+<div class="usa-overlay"></div>
+<header class="usa-header usa-header--basic">
+  <div class="usa-nav-container">
+    <div class="usa-navbar">
+      <div class="usa-logo">
+        <em class="usa-logo__text"><a href="./" title="CS-37"><img class="cs37-patch" src="assets/cs37-patch.png" alt="">CS-37</a></em>
+      </div>
+      <button type="button" class="usa-menu-btn">Menu</button>
+    </div>
+    <nav aria-label="Primary navigation" class="usa-nav">
+      <button type="button" class="usa-nav__close"><img src="vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
+      <ul class="usa-nav__primary usa-accordion">
+        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link"><span>Home</span></a></li>
+        <li class="usa-nav__primary-item"><a href="esss-builder.html" class="usa-nav-link usa-current" aria-current="page"><span>eSSS</span></a></li>
+        <li class="usa-nav__primary-item"><a href="strat-scorer.html" class="usa-nav-link"><span>Strats</span></a></li>
+        <li class="usa-nav__primary-item"><a href="bullets/" class="usa-nav-link"><span>Bullets</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 <header class="topbar"><div class="in">
   <span class="name">eSSS Builder</span>
   <span class="spacer"></span>
@@ -36,13 +49,13 @@
 </div></header>
 
 <main id="form">
-  <div class="page-head"><h1>Staff Summary Sheet</h1><p>Fills the CS-37 eSSS (AF IMT 1768) for you. Nothing leaves this computer.</p></div>
+  <div class="page-head"><h1>Staff Summary Sheet</h1><p>Fills the CS-37 eSSS (AF IMT 1768).</p></div>
 
   <section class="section">
     <div class="section-head"><h3>Blank form</h3><span class="actions" id="formState"></span></div>
     <div class="group pad formfile">
       <button class="btn btn-outline btn-sm" id="pickForm" type="button">Choose blank eSSS PDF</button>
-      <span class="t-muted" id="formName">Pick the blank eSSS your squadron sent. It is remembered in this browser only.</span>
+      <span class="t-muted" id="formName">Pick the blank eSSS your squadron sent.</span>
       <button class="btn btn-ghost btn-xs" id="forgetForm" type="button" hidden>Forget it</button>
     </div>
   </section>
@@ -68,7 +81,7 @@
 
   <section class="section">
     <div class="section-head"><h3>Routing</h3><span class="count" id="routeCount"></span><span class="actions"><button class="btn btn-ghost btn-sm" id="addRoute" type="button">Add a line</button></span></div>
-    <p class="lead">Who it goes to, in order, and what each one does. The form has 10 lines. Saved for next time.</p>
+    <p class="lead">Who it goes to, in order, and what each one does.</p>
     <div class="group pad" id="routes"></div>
   </section>
 
@@ -138,11 +151,24 @@
     <div class="group" id="boxes"></div>
   </section>
 </main>
-<footer class="site-footer">
-  <div class="site-footer-1"><div class="site-wrap"><ul>
-    <li><a href="esss-builder.html">eSSS Builder</a></li><li><a href="strat-scorer.html">Strat Scorer</a></li><li><a href="bullets/">Falcon Bullets</a></li>
-  </ul></div></div>
-  <div class="site-footer-2"><div class="site-wrap"><img src="assets/cs37-patch.png" alt="">Cadet Squadron 37</div></div>
+<footer class="usa-footer">
+  <div class="grid-container usa-footer__return-to-top">
+    <a href="#">Return to top</a>
+  </div>
+  <div class="usa-footer__secondary-section">
+    <div class="grid-container">
+      <div class="grid-row grid-gap">
+        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
+          <div class="mobile-lg:grid-col-auto">
+            <img class="usa-footer__logo-img" src="assets/cs37-patch.png" alt="">
+          </div>
+          <div class="mobile-lg:grid-col-auto">
+            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <div class="actionbar"><div class="in">
@@ -182,7 +208,6 @@ let D=load(),VALS=[],FORM=null;
 function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove('show'),2400)}
 
 /* theme */
-$('themeBtn').onclick=()=>{const r=document.documentElement,n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}};
 
 /* ---------- text ---------- */
 const parts=s=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');return m?{y:m[1],m:+m[2]-1,d:+m[3]}:null};
@@ -294,7 +319,7 @@ $('newBtn').onclick=()=>{if(!confirm('Clear this request? Your name, phone, scor
 function idb(mode,fn){return new Promise((res,rej)=>{let r;try{r=indexedDB.open('esssBuilder',1)}catch(e){return rej(e)}
   r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onerror=()=>rej(r.error);
   r.onsuccess=()=>{const tx=r.result.transaction('files',mode),st=tx.objectStore('files'),q=fn(st);tx.oncomplete=()=>res(q&&q.result);tx.onerror=()=>rej(tx.error)}})}
-function showForm(){$('formName').textContent=FORM?FORM.name:'Pick the blank eSSS your squadron sent. It is remembered in this browser only.';
+function showForm(){$('formName').textContent=FORM?FORM.name:'Pick the blank eSSS your squadron sent.';
   $('forgetForm').hidden=!FORM;$('pickForm').textContent=FORM?'Choose a different PDF':'Choose blank eSSS PDF';
   $('formState').innerHTML=FORM?'<span class="chip" data-tone="ok">Ready</span>':'<span class="chip" data-tone="warn">Needed</span>';refresh()}
 $('pickForm').onclick=()=>{$('formFile').value='';$('formFile').click()};
@@ -314,5 +339,6 @@ $('fillBtn').onclick=async()=>{
 fill();
 idb('readonly',s=>s.get('blank')).then(v=>{if(v&&v.bytes){FORM=v;showForm()}else showForm()}).catch(()=>showForm());
 </script>
+<script src="vendor/uswds/js/uswds.min.js"></script>
 </body>
 </html>
