@@ -1,25 +1,23 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Falcon Bullets</title>
 <link rel="icon" href="../assets/favicon.png">
-<link rel="stylesheet" href="../vendor/uswds/css/uswds.min.css">
-<link rel="stylesheet" href="../cs37-theme.css">
-<script src="../vendor/uswds/js/uswds-init.min.js"></script>
+<link rel="stylesheet" href="../site.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
 <style>
-  /* colours mapped onto the site palette: [P] Primer dark, [U] USWDS light; category colours kept */
+  /* colours mapped onto the minimal theme tokens in ../site.css (follows light/dark); category colours kept */
   :root {
-    --bg: #0d1117; --surface: #151b23; --surface-2: #212830; --surface-3: #262c36;
-    --line: #3d444d; --line-2: #3d444d;
-    --fg: #f0f6fc; --muted: #9198a1; --faint: #9198a1;
-    --accent: #1f6feb; --accent-hover: #388bfd;
-    --danger: #f85149; --good: #3fb950;
-    --msg-err: #f85149; --msg-ok: #3fb950; --bar-bg: rgba(13, 17, 23, .85);
+    --surface: var(--bg); --surface-2: var(--chip); --surface-3: var(--line);
+    --line-2: color-mix(in srgb, var(--faint) 45%, var(--line));
+    --fg: var(--text);
+    --accent: var(--text); --accent-hover: var(--muted); --on-accent: var(--bg);
+    --danger: var(--red); --good: #1a7f37;
+    --msg-err: var(--red); --msg-ok: #1a7f37; --bar-bg: color-mix(in srgb, var(--bg) 85%, transparent);
 
     --c-mil: #3b82f6;
     --c-acad: #a855f7;
@@ -27,20 +25,11 @@
     --c-char: #f59e0b;
     --c-other: #64748b;
 
-    --r-card: 0.5rem;
-    --r-field: 0.25rem;
-    --font: "Source Sans Pro", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    color-scheme: dark;
+    --r-card: 12px;
+    --r-field: 8px;
+    --font: var(--sans);
   }
-  :root[data-theme="light"] {
-    --bg: #f0f0f0; --surface: #ffffff; --surface-2: #f0f0f0; --surface-3: #dfe1e2;
-    --line: #dfe1e2; --line-2: #a9aeb1;
-    --fg: #1b1b1b; --muted: #565c65; --faint: #71767a;
-    --accent: #005ea2; --accent-hover: #1a4480;
-    --danger: #b50909; --good: #00a91c;
-    --msg-err: #b50909; --msg-ok: #005a30; --bar-bg: rgba(255, 255, 255, .9);
-    color-scheme: light;
-  }
+  @media (prefers-color-scheme: dark) { :root { --good: #3fb950; --msg-ok: #3fb950; } }
 
   * { box-sizing: border-box; }
   html, body { background: var(--bg); }
@@ -49,7 +38,7 @@
     font-family: var(--font);
     color: var(--fg);
     line-height: 1.5;
-    font-size: 15px;
+    font-size: 16px;
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 { margin: 0; font-weight: 700; }
@@ -74,7 +63,7 @@
     flex: 1; text-align: center; cursor: pointer; border: none; background: transparent;
     color: var(--muted); font-weight: 600; font-size: .88rem; padding: 9px; border-radius: 8px;
   }
-  .auth-tab.active { background: var(--accent); color: #fff; }
+  .auth-tab.active { background: var(--accent); color: var(--on-accent); }
   .auth-field { margin-bottom: 14px; }
   .auth-field .lab { display: block; font-size: .75rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
   .auth-msg { font-size: .82rem; border-radius: 9px; padding: 9px 12px; margin-bottom: 14px; }
@@ -135,7 +124,7 @@
   textarea { resize: vertical; min-height: 54px; line-height: 1.45; }
   input::placeholder, textarea::placeholder { color: var(--faint); }
   input:focus, textarea:focus, select:focus {
-    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(47, 109, 246, .22);
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--navy) 22%, transparent);
   }
   select { appearance: none; cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23949cb0' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
@@ -170,8 +159,8 @@
     border: 1px solid transparent; transition: background .12s, border-color .12s, color .12s;
   }
   .btn svg { width: 15px; height: 15px; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary { background: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { background: var(--accent); opacity: .86; }
   .btn-primary[disabled] { opacity: .6; cursor: default; }
   .btn-ghost { background: transparent; color: var(--muted); border-color: var(--line-2); }
   .btn-ghost:hover { background: var(--surface-2); color: var(--fg); }
@@ -224,7 +213,7 @@
   .entry-bullet { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: .9rem; white-space: pre-wrap; word-break: break-word; }
   .entry-notes { font-size: .84rem; color: var(--muted); margin-top: 9px; white-space: pre-wrap; word-break: break-word; }
   .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
-  .tag { font-size: .72rem; color: var(--accent-hover); background: rgba(47, 109, 246, .12); padding: 2px 9px; border-radius: 6px; }
+  .tag { font-size: .72rem; color: var(--muted); background: var(--chip); padding: 2px 9px; border-radius: 6px; }
   .entry-actions { display: flex; gap: 7px; margin-top: 13px; }
 
   .empty { text-align: center; padding: 48px 20px; color: var(--faint); border: 1px dashed var(--line-2); border-radius: 14px; }
@@ -280,7 +269,7 @@
     background: var(--surface-2); color: var(--muted);
   }
   .classpick button:hover { color: var(--fg); }
-  .classpick button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .classpick button.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .classpick button small { display: block; font-weight: 500; font-size: .68rem; opacity: .85; margin-top: 2px; }
   input.auto[readonly], textarea.auto[readonly] {
     background: var(--surface-3); color: var(--fg); border-color: var(--line); cursor: default;
@@ -303,27 +292,10 @@
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
-<a class="usa-skipnav" href="#main-content">Skip to main content</a>
-<div class="usa-overlay"></div>
-<header class="usa-header usa-header--basic">
-  <div class="usa-nav-container">
-    <div class="usa-navbar">
-      <div class="usa-logo">
-        <em class="usa-logo__text"><a href="../" title="CS-37"><img class="cs37-patch" src="../assets/cs37-patch.png" alt="">CS-37</a></em>
-      </div>
-      <button type="button" class="usa-menu-btn">Menu</button>
-    </div>
-    <nav aria-label="Primary navigation" class="usa-nav">
-      <button type="button" class="usa-nav__close"><img src="../vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
-      <ul class="usa-nav__primary usa-accordion">
-        <li class="usa-nav__primary-item"><a href="../" class="usa-nav-link"><span>Home</span></a></li>
-        <li class="usa-nav__primary-item"><a href="../esss-builder.html" class="usa-nav-link"><span>eSSS</span></a></li>
-        <li class="usa-nav__primary-item"><a href="../strat-scorer.html" class="usa-nav-link"><span>Strats</span></a></li>
-        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link usa-current" aria-current="page"><span>Bullets</span></a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="../"><img src="../assets/cs37-patch.png" alt="">CS-37</a>
+  <nav class="nav-links" aria-label="Primary"><a href="../">Home</a><a href="../esss-builder.html">eSSS</a><a href="../strat-scorer.html">Strats</a><a href="./" class="on" aria-current="page">Bullets</a></nav>
+</div></header>
 
 <!-- Logged-out view -->
 <div class="auth-wrap" id="authGate" hidden>
@@ -491,25 +463,7 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<footer class="usa-footer">
-  <div class="grid-container usa-footer__return-to-top">
-    <a href="#">Return to top</a>
-  </div>
-  <div class="usa-footer__secondary-section">
-    <div class="grid-container">
-      <div class="grid-row grid-gap">
-        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
-          <div class="mobile-lg:grid-col-auto">
-            <img class="usa-footer__logo-img" src="../assets/cs37-patch.png" alt="">
-          </div>
-          <div class="mobile-lg:grid-col-auto">
-            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+<footer class="wrap"><div class="foot">Cadet Squadron 37</div></footer>
 <script>
 (function () {
   "use strict";
@@ -1313,4 +1267,3 @@
   updatePreview();
 })();
 </script>
-<script src="../vendor/uswds/js/uswds.min.js"></script>
