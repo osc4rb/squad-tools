@@ -3,7 +3,7 @@
    its colour tokens, type (system sans 16px/1.65, JetBrains Mono uppercase 12px labels, 22px section titles),
    .btn / .btn.link buttons, .tab / .filter switch, .chip pills and hairline-row lists.
    Form controls do not exist in minimal.css; they are drawn as its .btn box (8px radius, 1px inset line).
-   Follows light/dark through site.css. The accent (CS-37 navy, gold in dark) is used only for focus and the
+   Always black (site.css palette). The accent (CS-37 navy, gold in dark) is used only for focus and the
    chosen state, as in minimal. */
 
 :root {
@@ -11,16 +11,13 @@
   --border: var(--line); --bg-subtle: var(--chip); --font: var(--sans);
   --text-muted: var(--muted); --text-faint: var(--faint);
   --danger: var(--red);
-  --tag-ok: #1a7f37; --tag-warn: #9a6700; --tag-late: var(--red);
+  --tag-ok: #3fb950; --tag-warn: #d29922; --tag-late: #ff6b6b;
   --bar: var(--text);
-  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236b6b72' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
-}
-@media (prefers-color-scheme: dark) {
-  :root { --tag-ok: #3fb950; --tag-warn: #d29922; --tag-late: #ff6b6b; }
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23878580' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
 }
 
 h1, h2, h3, p, ul, ol { margin: 0; }
-h1, h2, h3 { font-weight: 600; letter-spacing: -.015em; line-height: 1.3; }
+h1, h2, h3 { color: var(--hi); font-weight: 600; letter-spacing: -.015em; line-height: 1.3; }
 h1 { font-size: 22px; }
 h2 { font-size: 18px; }
 h3 { font-size: 16px; }

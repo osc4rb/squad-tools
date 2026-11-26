@@ -10,14 +10,14 @@
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"></script>
 <style>
-  /* colours mapped onto the minimal theme tokens in ../site.css (follows light/dark); category colours kept */
+  /* colours mapped onto the minimal theme tokens in ../site.css (always black); category colours kept */
   :root {
     --surface: var(--bg); --surface-2: var(--chip); --surface-3: var(--line);
     --line-2: color-mix(in srgb, var(--faint) 45%, var(--line));
     --fg: var(--text);
     --accent: var(--text); --accent-hover: var(--muted); --on-accent: var(--bg);
-    --danger: var(--red); --good: #1a7f37;
-    --msg-err: var(--red); --msg-ok: #1a7f37; --bar-bg: color-mix(in srgb, var(--bg) 85%, transparent);
+    --danger: var(--red); --good: #3fb950;
+    --msg-err: var(--red); --msg-ok: #3fb950; --bar-bg: color-mix(in srgb, var(--bg) 85%, transparent);
 
     --c-mil: #3b82f6;
     --c-acad: #a855f7;
@@ -29,7 +29,6 @@
     --r-field: 8px;
     --font: var(--sans);
   }
-  @media (prefers-color-scheme: dark) { :root { --good: #3fb950; --msg-ok: #3fb950; } }
 
   * { box-sizing: border-box; }
   html, body { background: var(--bg); }
