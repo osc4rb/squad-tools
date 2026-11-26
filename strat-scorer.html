@@ -55,11 +55,11 @@ tr.detail > td { background: var(--bg-subtle); }
 <script>
 const PROOF={q:'What proof is written?',o:['No result written','Result described in words, no number','A number or named outcome anyone can check','Checkable result that lasted (still in use, repeated, adopted) or a top award at that level']};
 const CATS={
- duty:{name:'Duty & Job Performance',hint:'Scored against the cadet’s own job, so a Supervisor and a staff officer are measured the same way. Levels: cadet, element, flight, squadron, group/wing.',dials:[
+ duty:{name:'Duty & Job Performance',hint:'Levels: cadet, element, flight, squadron, group/wing.',dials:[
   {q:'How far past the job was it?',o:['Part of the job, done late or needing fixes','Part of the job, done to standard and on time','Part of the job, done clearly better than the standard','Extra work inside their lane that nobody assigned','Fixed or built something the unit needed outside their lane']},
   {q:'Who felt it, compared with the job’s normal reach?',o:['Fewer people than the job covers','The people the job covers','One level wider than the job covers','Two or more levels wider']},PROOF],
   ex:[['Met with assigned 4-degree each week.',[1,1,0]],['Element Leader: rebuilt the element’s room-inspection checklist without being asked; fails dropped from 5 to 0 by midterm.',[3,1,2]],['Supervisor: built a shared tracker that 100+ cadets in the squadron now use; still in use the next semester.',[4,3,3]]]},
- lead:{name:'Leadership & Initiative',hint:'Leading events, trainings and ceremonies, volunteering to improve the squadron, mentoring outside a formal role. Open to every job, so reach is counted in plain numbers.',dials:[
+ lead:{name:'Leadership & Initiative',hint:'Leading events, trainings and ceremonies, volunteering to improve the squadron, mentoring outside a formal role.',dials:[
   {q:'What was their role?',o:['Took part','Helped: did a task someone gave them','Led one part of it, or mentored on their own time','Led the whole thing','Started it and led it (it did not exist or was not assigned)']},
   {q:'How many people did it reach?',o:['1 to 3 cadets','Element-sized group (4 to 12)','Flight-sized group (13 to 40)','Squadron-sized or wider (40+)']},PROOF],
   ex:[['Mentored two 4-degrees on knowledge before a test.',[2,0,0]],['Ran the PT portion of squadron training day for 100+ cadets.',[2,3,1]],['Started and ran a weekly squadron study night; 60+ cadets attend and it continued the next semester.',[4,3,3]]]},
@@ -106,7 +106,7 @@ function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');
 
 /* scale */
 function renderScale(){
-  let h=`<div class="page-head"><h1>The scale</h1><p>The rater never picks a number. Three factual answers per bullet make it.</p></div>
+  let h=`<div class="page-head"><h1>The scale</h1></div>
   <section class="section"><div class="section-head"><h3>How a number gets made</h3></div>
   <div class="group pad"><p>For each written bullet the rater answers three questions; the points add up to 0 to 10. A rubric area takes the cadet's best three bullets, weighted ${S.depth.map(esc).join(' / ')}. Presence & Attitude is five yes/no statements worth 2 points each. The four areas are weighted into a total out of 100.</p></div>
   <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th class="num">Points</th><th>What it looks like</th></tr></thead><tbody>
@@ -114,18 +114,17 @@ function renderScale(){
   <tr><td class="num">4</td><td>Did the job to standard and shows a result with a number.</td></tr>
   <tr><td class="num">6</td><td>Went past the job or led something, with a result anyone can check.</td></tr>
   <tr><td class="num">8</td><td>Went past the job, reached well wider than the job covers, checkable result.</td></tr>
-  <tr><td class="num">10</td><td>Started or built something outside their lane, reached far wider, and it lasted. Expect only a few per squadron each semester.</td></tr>
+  <tr><td class="num">10</td><td>Started or built something outside their lane, reached far wider, and it lasted.</td></tr>
   </tbody></table></div></section>`;
   for(const k of BK){const c=CATS[k];
     h+=`<section class="section"><div class="section-head"><h3>${esc(c.name)}</h3><span class="chip plain">${esc(S.weights[k])}%</span></div><p class="lead">${esc(c.hint)}</p>`;
     c.dials.forEach(d=>{h+=`<div class="table-wrap" style="margin-bottom:12px"><table><thead><tr><th class="num">Pts</th><th>${esc(d.q)}</th></tr></thead><tbody>`+d.o.map((o,i)=>`<tr><td class="num">${i}</td><td>${esc(o)}</td></tr>`).join('')+`</tbody></table></div>`});
     h+=`<div class="group">`+c.ex.map(([tx,d])=>`<div class="row-item ex"><div class="bullet-top"><span class="chip" data-tone="accent">${d[0]+d[1]+d[2]} pts</span><span>${esc(tx)}</span></div><div class="meta t-small t-muted">${d.map((v,j)=>esc(c.dials[j].o[v])+' ('+v+')').join(' + ')}</div></div>`).join('')+`</div></section>`}
-  h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="chip plain">${esc(S.weights.pres)}%</span></div><p class="lead">Not scored from bullets. The rater marks each statement yes or no from what they saw; 2 points each.</p><div class="group">`+PRES.map(p=>`<div class="row-item">${esc(p)}</div>`).join('')+`</div></section>`;
+  h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="chip plain">${esc(S.weights.pres)}%</span></div><p class="lead">Yes or no, 2 points each.</p><div class="group">`+PRES.map(p=>`<div class="row-item">${esc(p)}</div>`).join('')+`</div></section>`;
   h+=`<section class="section"><div class="section-head"><h3>Keeping flights comparable</h3></div><div class="group">
-  <div class="row-item">Every rater uses this same scale, and Duty is scored against the cadet's own job, so staff jobs do not win just for a wider reach.</div>
   <div class="row-item">Each flight exports a file; the strat board imports all of them into one Board. Scores are recalculated with the board's weights.</div>
   <div class="row-item">When two raters score the same cadet, the Board averages them and flags a gap of 10 points or more.</div>
-  <div class="row-item">The Board flags any flight of 3+ cadets whose average sits 8 or more points from the class average. A flag means look at it, not adjust it.</div></div></section>
+  <div class="row-item">The Board flags any flight of 3+ cadets whose average sits 8 or more points from the class average.</div></div></section>
   <section class="section"><div class="section-head"><h3>Weights</h3><span class="actions t-small t-muted" id="wmsg"></span></div><div class="group pad">
   <div class="grid">`+ALL.map(k=>`<label class="field"><span>${SHORT[k]} %</span><input class="input num" type="number" min="0" max="100" data-w="${k}" value="${esc(S.weights[k])}"></label>`).join('')+`</div>
   <div class="grid">`+[0,1,2].map(i=>`<label class="field"><span>${['Best','Second','Third'][i]} bullet %</span><input class="input num" type="number" min="0" max="100" data-dp="${i}" value="${esc(S.depth[i])}"></label>`).join('')+`</div></div></section>`;
@@ -140,7 +139,7 @@ $('v-scale').addEventListener('change',e=>{const el=e.target;const v=Math.max(0,
 /* score */
 function renderForm(){
   const flights=[...new Set(S.entries.map(e=>e.flight).filter(Boolean))];
-  let h=`<div class="page-head"><h1>Score a cadet</h1><p>Score only what is written. No result in the bullet means "No result written", even if you know the story.</p></div>
+  let h=`<div class="page-head"><h1>Score a cadet</h1></div>
   <section class="section"><div class="section-head"><h3>Who</h3></div><div class="group pad"><div class="grid">
    <label class="field"><span>Cadet</span><input class="input" data-f="name" value="${esc(D.name)}" placeholder="Last, First" autocomplete="off"></label>
    <label class="field"><span>Class year</span><input class="input" data-f="year" value="${esc(D.year)}" placeholder="2029" inputmode="numeric" autocomplete="off"></label>
@@ -154,7 +153,7 @@ function renderForm(){
       h+=`<div class="row-item"><div class="bullet-top"><textarea class="textarea" rows="1" data-c="${k}" data-i="${i}" data-f="t" placeholder="Bullet ${i+1} (optional: paste it here)" aria-label="${esc(c.name)} bullet ${i+1}">${esc(b.t)}</textarea><span class="chip plain" id="p-${k}-${i}">0 pts</span></div><div class="dials">`+
       c.dials.map((d,j)=>`<label class="field"><span>${esc(d.q)}</span><select class="select" data-c="${k}" data-i="${i}" data-j="${j}"><option value="">Not scored</option>${d.o.map((o,v)=>`<option value="${v}"${b.d[j]===v?' selected':''}>${v}: ${esc(o)}</option>`).join('')}</select></label>`).join('')+`</div></div>`});
     h+=`</div></section>`}
-  h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="count">${esc(S.weights.pres)}%</span><span class="actions"><span class="chip" data-tone="accent" id="c-pres">0.0</span></span></div><p class="lead">Check each statement that was true all semester from what you saw.</p><div class="group">`+
+  h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="count">${esc(S.weights.pres)}%</span><span class="actions"><span class="chip" data-tone="accent" id="c-pres">0.0</span></span></div><p class="lead">Check each one that was true all semester.</p><div class="group">`+
     PRES.map((p,i)=>`<label class="row-item check-row"><input class="check" type="checkbox" data-p="${i}"${D.pres[i]?' checked':''}><span>${esc(p)}</span></label>`).join('')+`</div></section>`;
   $('v-score').innerHTML=h;nums();
 }
@@ -187,14 +186,14 @@ function renderBoard(){
   const all=groups(),years=[...new Set(all.map(g=>g.year).filter(Boolean))].sort(),fls=[...new Set(all.map(g=>g.flight).filter(Boolean))].sort();
   if(FY&&!years.includes(FY))FY='';if(FF&&!fls.includes(FF))FF='';
   const inYear=all.filter(g=>!FY||g.year===FY),rows=inYear.filter(g=>!FF||g.flight===FF).sort((a,b)=>b.total-a.total);
-  let h=`<div class="page-head"><h1>Board</h1><p>${all.length} cadet${all.length===1?'':'s'} scored. Rank within one class year.</p></div>
+  let h=`<div class="page-head"><h1>Board</h1><p>${all.length} cadet${all.length===1?'':'s'} scored.</p></div>
   <div class="toolbar">
    <select class="select" id="fy" style="width:auto" aria-label="Class year"><option value="">All years</option>${years.map(y=>`<option${y===FY?' selected':''}>${esc(y)}</option>`).join('')}</select>
    <select class="select" id="ff" style="width:auto" aria-label="Flight"><option value="">All flights</option>${fls.map(y=>`<option${y===FF?' selected':''}>${esc(y)}</option>`).join('')}</select>
    <span class="spacer"></span>
    <button class="btn btn-outline btn-sm" data-a="imp">Import files</button><button class="btn btn-outline btn-sm" data-a="exp">Export file</button><button class="btn btn-ghost btn-sm" data-a="csv">CSV</button>
    <button class="btn btn-ghost btn-sm" data-a="demo">Example</button><button class="btn btn-ghost btn-sm danger" data-a="clear">Clear all</button></div>`;
-  if(!all.length){h+=`<div class="group pad"><p class="t-muted">No scores yet. Score a cadet, import flight files, or load the example.</p></div>`;$('v-board').innerHTML=h;return}
+  if(!all.length){h+=`<div class="group pad"><p class="t-muted">No scores yet.</p></div>`;$('v-board').innerHTML=h;return}
   const avg=a=>a.reduce((s,g)=>s+g.total,0)/(a.length||1),overall=avg(inYear);
   const byF=fls.map(f=>{const a=inYear.filter(g=>g.flight===f);return{f,n:a.length,avg:avg(a)}}).filter(x=>x.n);
   h+=`<section class="section"><div class="section-head"><h3>Flight check${FY?' · '+esc(FY):''}</h3><span class="count">Class average ${f1(overall)}</span></div><div class="table-wrap"><table><thead><tr><th>Flight</th><th class="num">Cadets</th><th class="num">Average</th><th class="num">vs class</th><th>Status</th></tr></thead><tbody>`+

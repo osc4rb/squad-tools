@@ -33,7 +33,7 @@
 </div></header>
 
 <main id="form">
-  <div class="page-head"><h1>Staff Summary Sheet</h1><p>Fills the CS-37 eSSS (AF IMT 1768).</p></div>
+  <div class="page-head"><h1>Staff Summary Sheet</h1></div>
 
   <section class="section">
     <div class="section-head"><h3>Blank form</h3><span class="actions" id="formState"></span></div>
@@ -57,7 +57,7 @@
         <label class="field"><span>Squadron</span><input class="input" data-f="sq" inputmode="numeric" autocomplete="off"></label>
         <label class="field"><span>Phone</span><input class="input" data-f="phone" inputmode="tel" autocomplete="off"></label>
         <label class="field"><span>Date completed</span><input class="input" type="date" data-f="date"></label>
-        <label class="field"><span>Suspense</span><input class="input" type="date" data-f="suspense"><small>When you need the answer</small></label>
+        <label class="field"><span>Suspense</span><input class="input" type="date" data-f="suspense"></label>
       </div>
       <label class="field" style="margin-top:12px"><span>Subject</span><input class="input" data-f="subject" placeholder="Special Pass Request" autocomplete="off"></label>
     </div>
@@ -65,7 +65,6 @@
 
   <section class="section">
     <div class="section-head"><h3>Routing</h3><span class="count" id="routeCount"></span><span class="actions"><button class="btn btn-ghost btn-sm" id="addRoute" type="button">Add a line</button></span></div>
-    <p class="lead">Who it goes to, in order, and what each one does.</p>
     <div class="group pad" id="routes"></div>
   </section>
 
@@ -85,7 +84,6 @@
     </section>
     <section class="section">
       <div class="section-head"><h3>3. Itinerary</h3><span class="actions"><button class="btn btn-ghost btn-sm" id="addLeg" type="button">Add a leg</button></span></div>
-      <p class="lead">One line per leg: date, depart from, time, arrive at, time, how.</p>
       <div class="group pad" id="legs"></div>
     </section>
     <section class="section">
@@ -108,7 +106,7 @@
   <section class="section" id="otherBox" hidden>
     <div class="section-head"><h3>Paragraphs</h3></div>
     <div class="group pad">
-      <label class="field"><span>1. Purpose</span><textarea class="textarea" data-f="purpose" rows="2" placeholder="To request permission to ..."></textarea><small>One sentence</small></label>
+      <label class="field"><span>1. Purpose</span><textarea class="textarea" data-f="purpose" rows="2" placeholder="To request permission to ..."></textarea></label>
       <label class="field"><span>2. Background</span><textarea class="textarea" data-f="background" rows="3"></textarea></label>
       <label class="field"><span>3. Discussion</span><textarea class="textarea" data-f="discussion" rows="5"></textarea></label>
       <label class="field"><span>4. Considerations</span><textarea class="textarea" data-f="considerations" rows="3"></textarea></label>
@@ -131,7 +129,6 @@
 
   <section class="section">
     <div class="section-head"><h3>What goes in each box</h3></div>
-    <p class="lead">The PDF gets exactly this. Copy a box by hand only if you need to.</p>
     <div class="group" id="boxes"></div>
   </section>
 </main>
@@ -285,7 +282,7 @@ $('newBtn').onclick=()=>{if(!confirm('Clear this request? Your name, phone, scor
 function idb(mode,fn){return new Promise((res,rej)=>{let r;try{r=indexedDB.open('esssBuilder',1)}catch(e){return rej(e)}
   r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onerror=()=>rej(r.error);
   r.onsuccess=()=>{const tx=r.result.transaction('files',mode),st=tx.objectStore('files'),q=fn(st);tx.oncomplete=()=>res(q&&q.result);tx.onerror=()=>rej(tx.error)}})}
-function showForm(){$('formName').textContent=FORM?FORM.name:'Pick the blank eSSS your squadron sent.';
+function showForm(){$('formName').textContent=FORM?FORM.name:'';
   $('forgetForm').hidden=!FORM;$('pickForm').textContent=FORM?'Choose a different PDF':'Choose blank eSSS PDF';
   $('formState').innerHTML=FORM?'<span class="chip" data-tone="ok">Ready</span>':'<span class="chip" data-tone="warn">Needed</span>';refresh()}
 $('pickForm').onclick=()=>{$('formFile').value='';$('formFile').click()};
