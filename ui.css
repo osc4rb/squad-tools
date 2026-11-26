@@ -1,156 +1,165 @@
 /* ui.css: the tool page bodies (eSSS Builder, Strat Scorer), loaded after site.css.
-   Every value comes from the portfolio's "minimal" theme (agentic-portfolio/minimal.css), copied in site.css:
-   its colour tokens, type (system sans 16px/1.65, JetBrains Mono uppercase 12px labels, 22px section titles),
-   .btn / .btn.link buttons, .tab / .filter switch, .chip pills and hairline-row lists.
-   Form controls do not exist in minimal.css; they are drawn as its .btn box (8px radius, 1px inset line).
-   Always black (site.css palette). The accent (CS-37 navy, gold in dark) is used only for focus and the
-   chosen state, as in minimal. */
+   Look = Falcon Bullets (bullets/index.html), Oscar 25 Nov 2026: black page, raised cards (surface, 1px line,
+   12-14px radius) with a 3px colour edge per section in the Bullets category colours, inputs on surface-2,
+   10px buttons, pill tags, the auth-tab style switch. Colours are the site.css tokens (flight CV black).
+   Section colours cycle blue, purple, green, amber, slate; strat rubric areas keep one colour each everywhere. */
 
 :root {
-  /* names the tool pages already use, mapped onto the minimal tokens */
-  --border: var(--line); --bg-subtle: var(--chip); --font: var(--sans);
+  /* names the tool pages already use, mapped onto the site tokens */
+  --border: var(--line); --bg-subtle: var(--surface-2); --font: var(--sans);
   --text-muted: var(--muted); --text-faint: var(--faint);
-  --danger: var(--red);
-  --tag-ok: #3fb950; --tag-warn: #d29922; --tag-late: #ff6b6b;
-  --bar: var(--text);
-  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23878580' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  --danger: #ff6b6b; --ok: #3fb950; --warn: #d29922;
+  --on-accent: var(--bg);
+  --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23878580' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
 }
 
+body { line-height: 1.5; }
 h1, h2, h3, p, ul, ol { margin: 0; }
-h1, h2, h3 { color: var(--hi); font-weight: 600; letter-spacing: -.015em; line-height: 1.3; }
-h1 { font-size: 22px; }
+h1, h2, h3 { color: var(--hi); font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
+h1 { font-size: 24px; letter-spacing: -.02em; }
 h2 { font-size: 18px; }
 h3 { font-size: 16px; }
 a { color: inherit; text-decoration: underline; text-decoration-color: var(--faint); text-underline-offset: 3px; }
-a:hover { text-decoration-color: var(--text); }
+a:hover { color: var(--hi); text-decoration-color: var(--text); }
 button, input, select, textarea { font: inherit; color: inherit; }
-.t-small { font-size: 13px; line-height: 1.4; }
+.t-small { font-size: .82rem; line-height: 1.4; }
 .t-muted { color: var(--muted); }
 .t-faint { color: var(--faint); }
-.t-caption { font: 500 12px/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+.t-caption { font-size: .74rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 .num { font-variant-numeric: tabular-nums; }
 [hidden] { display: none !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 
-/* tool bar under the site nav: mono label (minimal .eyebrow) and the view switch */
-.topbar .in { max-width: var(--w); margin: 0 auto; padding: 40px 24px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.topbar .name { font: 500 12px/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+/* tool bar: Bullets brand text + the switch */
+.topbar .in { max-width: var(--w); margin: 0 auto; padding: 36px 24px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.topbar .name { font-size: 1.05rem; font-weight: 800; letter-spacing: -.02em; color: var(--hi); white-space: nowrap; }
 .topbar .spacer { flex: 1; }
-main { max-width: var(--w); margin: 0 auto; padding: 24px 24px 40px; }
+main { max-width: var(--w); margin: 0 auto; padding: 20px 24px 40px; }
 body:has(.actionbar) { padding-bottom: 72px; }
-@media (max-width: 560px) { .topbar .in { padding: 28px 16px 0; } main { padding: 20px 16px 40px; } }
+@media (max-width: 560px) { .topbar .in { padding: 24px 16px 0; } main { padding: 16px 16px 40px; } }
 
-.page-head { margin-bottom: 28px; }
-.page-head p { margin-top: 10px; color: var(--muted); max-width: 60ch; }
-.toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.page-head { margin-bottom: 18px; }
+.page-head p { margin-top: 6px; color: var(--muted); max-width: 60ch; }
+.toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .toolbar .spacer { flex: 1; }
-.section { margin-top: 48px; }
-.section-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 2rem; margin-bottom: 12px; }
-.section-head .count { font: 500 12px/1.4 var(--mono); color: var(--faint); font-variant-numeric: tabular-nums; }
-.section-head .actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
-.section > p.lead { color: var(--muted); max-width: 60ch; margin: -4px 0 16px; }
 
-/* boxes: minimal .feature box (12px radius, 1px inset line) with hairline rows */
-.group { border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); }
-.group > .row-item { padding: 16px 18px; border-top: 1px solid var(--line); }
+/* sections = Bullets cards with a colour edge (.entry / .sec) */
+.section { --sc: var(--c-mil); margin-top: 12px; background: var(--surface); border: 1px solid var(--line);
+  border-left: 3px solid var(--sc); border-radius: 14px; padding: 16px 18px 18px; }
+main > div > .section:nth-of-type(5n+2), main > .section:nth-of-type(5n+2) { --sc: var(--c-acad); }
+main > div > .section:nth-of-type(5n+3), main > .section:nth-of-type(5n+3) { --sc: var(--c-ath); }
+main > div > .section:nth-of-type(5n+4), main > .section:nth-of-type(5n+4) { --sc: var(--c-char); }
+main > div > .section:nth-of-type(5n+5), main > .section:nth-of-type(5n+5) { --sc: var(--c-other); }
+/* strat rubric areas: the same colour in Score view as the ACA areas in Falcon Bullets */
+.section:has(#c-duty) { --sc: var(--c-mil); } .section:has(#c-lead) { --sc: var(--c-acad); }
+.section:has(#c-out) { --sc: var(--c-ath); } .section:has(#c-pres) { --sc: var(--c-char); }
+.section-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 1.75rem; margin-bottom: 12px; }
+.section-head h3 { font-size: 1rem; }
+.section-head .count { font-size: .74rem; font-weight: 700; color: var(--sc); background: color-mix(in srgb, var(--sc) 16%, transparent);
+  padding: 2px 8px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.section-head .actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.section > p.lead { color: var(--muted); font-size: .9rem; max-width: 60ch; margin: -4px 0 12px; }
+
+/* inner boxes: Bullets .entry-bullet (surface-2) holding hairline rows */
+.group { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+.group > .row-item { padding: 12px 14px; border-top: 1px solid var(--line-2); }
 .group > .row-item:first-child { border-top: 0; }
-.group.pad { box-shadow: none; border-radius: 0; padding: 0; }
+.group:not(.pad) .input, .group:not(.pad) .select, .group:not(.pad) .textarea { background: var(--surface); }
+.group.pad { background: none; border: 0; border-radius: 0; padding: 0; }
 
-/* buttons: minimal .btn (outline) and .btn.link (filled with the text colour) */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: none;
-  min-height: 36px; padding: 10px 14px; border: 0; border-radius: 8px;
-  font: 500 14px/1 var(--sans); white-space: nowrap; cursor: pointer; text-decoration: none;
-  color: var(--text); background: none; box-shadow: inset 0 0 0 1px var(--line); transition: background .15s, box-shadow .15s, opacity .15s; }
-.btn:hover { background: var(--chip); }
-.btn:disabled { opacity: .45; pointer-events: none; }
-.btn-primary { background: var(--text); color: var(--bg); box-shadow: none; }
-.btn-primary:hover { background: var(--text); opacity: .86; }
-.btn-ghost { box-shadow: none; color: var(--muted); padding: 0 4px; }
-.btn-ghost:hover { background: none; color: var(--text); }
+/* buttons: Bullets .btn */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex: none; cursor: pointer;
+  font-size: .86rem; font-weight: 600; line-height: 1; border-radius: 10px; padding: 10px 16px; white-space: nowrap; text-decoration: none;
+  color: var(--muted); background: transparent; border: 1px solid var(--line-2); transition: background .12s, border-color .12s, color .12s, opacity .12s; }
+.btn:hover { background: var(--surface-2); color: var(--text); }
+.btn:disabled { opacity: .5; pointer-events: none; }
+.btn-primary { background: var(--text); color: var(--bg); border-color: transparent; }
+.btn-primary:hover { background: var(--text); color: var(--bg); opacity: .86; }
+.btn-ghost { border-color: transparent; padding: 7px 8px; }
 .btn-ghost.danger { color: var(--danger); }
-.btn-sm { min-height: 32px; padding: 8px 12px; font-size: 13px; }
-.btn-xs { min-height: 28px; padding: 6px 10px; font-size: 13px; }
-.btn-ghost.btn-sm, .btn-ghost.btn-xs { padding: 0 4px; }
-.btn-icon { width: 32px; min-height: 32px; padding: 0; box-shadow: none; font-size: 20px; color: var(--muted); }
-.btn-icon:hover { color: var(--text); background: var(--chip); }
+.btn-ghost.danger:hover { background: rgba(239, 68, 68, .14); }
+.btn-sm { padding: 7px 11px; font-size: .8rem; border-radius: 9px; }
+.btn-xs { padding: 5px 9px; font-size: .78rem; border-radius: 8px; }
+.btn-ghost.btn-sm, .btn-ghost.btn-xs { padding: 6px 8px; }
+.btn-icon { width: 34px; height: 34px; padding: 0; border-color: transparent; font-size: 1.3rem; color: var(--muted); }
+.btn-icon:hover { color: var(--text); }
 
-/* fields: label, hint, input; controls drawn as the .btn box */
+/* fields: Bullets .lab + inputs */
 .field { display: flex; flex-direction: column; min-width: 0; }
-.field > span { order: 0; font-size: 14px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; }
-.field > small { order: 1; font-size: 13px; line-height: 1.4; color: var(--faint); margin: -2px 0 8px; }
+.field > span { order: 0; font-size: .75rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.field > small { order: 1; font-size: .74rem; color: var(--faint); margin: -2px 0 6px; }
 .field > .input, .field > .select, .field > .textarea { order: 2; }
-.input, .select, .textarea { width: 100%; min-width: 0; height: 40px; padding: 8px 10px; border: 0; border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--line); background: var(--bg); color: var(--text);
-  font: 400 15px/1.4 var(--sans); appearance: none; -webkit-appearance: none; }
-.input:hover, .select:hover, .textarea:hover { box-shadow: inset 0 0 0 1px var(--faint); }
-.textarea { height: auto; min-height: 4rem; resize: vertical; }
-.select { padding-right: 2rem; cursor: pointer; background-image: var(--chev);
-  background-repeat: no-repeat; background-position: right 10px center; background-size: 1rem; }
+.input, .select, .textarea { width: 100%; min-width: 0; height: 42px; padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--line-2); background: var(--surface-2); color: var(--text);
+  font: 400 .9rem/1.4 var(--sans); appearance: none; -webkit-appearance: none; transition: border-color .12s, box-shadow .12s; }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.textarea { height: auto; min-height: 54px; line-height: 1.45; resize: vertical; }
+.select { padding-right: 34px; cursor: pointer; background-image: var(--chev);
+  background-repeat: no-repeat; background-position: right 11px center; background-size: 16px; }
 .input::placeholder, .textarea::placeholder { color: var(--faint); opacity: 1; }
-.input[type="date"], .input[type="time"] { padding-right: 4px; }
-.grid { display: grid; gap: 20px 16px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-.grid + .grid, .grid + .field, .field + .field, .field + .grid { margin-top: 20px; }
+.input[type="date"], .input[type="time"] { padding-right: 6px; }
+.grid { display: grid; gap: 14px 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.grid + .grid, .grid + .field, .field + .field, .field + .grid { margin-top: 14px; }
 .grid > .field { margin-top: 0; }
 /* inside a row of fields the hint goes under the input, so the inputs stay level */
 .grid > .field > small { order: 3; margin: 6px 0 0; }
 .span-2 { grid-column: span 2; }
 @media (max-width: 480px) { .span-2 { grid-column: auto; } }
 
-/* checkbox: the same box, filled with the text colour when checked */
-.check { appearance: none; -webkit-appearance: none; flex: none; position: relative;
-  width: 18px; height: 18px; margin: 3px 0 0; border: 0; border-radius: 4px;
-  background: var(--bg); box-shadow: inset 0 0 0 1px var(--faint); cursor: pointer; }
-.check::before { content: ""; position: absolute; inset: -8px; }
-.check:checked { background: var(--text); box-shadow: none; }
-.check:checked::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px;
-  border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
-.check-row { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+/* checkbox: Bullets uses the native box tinted with the accent */
+.check { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); cursor: pointer; }
+.check-row { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
 
-/* view switch: minimal .tab / .filter */
-.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; flex: none; }
-.seg button { font: 500 13px/1 var(--sans); color: var(--muted); background: none; border: 0; padding: 8px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+/* switch: Bullets .auth-tabs */
+.seg { display: inline-flex; gap: 4px; flex: none; background: var(--surface-2); border: 1px solid var(--line); border-radius: 11px; padding: 4px; }
+.seg button { border: 0; background: transparent; color: var(--muted); font-weight: 600; font-size: .84rem; padding: 7px 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
 .seg button:hover { color: var(--text); }
-.seg button[aria-pressed="true"] { color: var(--text); background: var(--chip); }
+.seg button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
 
-/* tags: minimal .chip pill; the state colour is the text, the word always says it */
-.chip { display: inline-flex; align-items: center; flex: none; padding: 5px 10px; border-radius: 999px;
-  background: var(--chip); color: var(--c-fg, var(--muted)); font: 500 12px/1 var(--sans); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.chip[data-tone="ok"] { --c-fg: var(--tag-ok); }
-.chip[data-tone="warn"] { --c-fg: var(--tag-warn); }
-.chip[data-tone="late"] { --c-fg: var(--tag-late); }
-.chip[data-tone="accent"] { --c-fg: var(--text); box-shadow: inset 0 0 0 1px var(--line); background: none; }
+/* tags: Bullets .pill, tinted with the state or section colour */
+.chip { --ec: var(--c-other); display: inline-flex; align-items: center; flex: none; padding: 3px 9px; border-radius: 999px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .02em; line-height: 1.3; white-space: nowrap; font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--ec) 18%, transparent); color: color-mix(in srgb, var(--ec) 72%, white);
+  border: 1px solid color-mix(in srgb, var(--ec) 34%, transparent); }
+.chip[data-tone="ok"] { --ec: var(--ok); }
+.chip[data-tone="warn"] { --ec: var(--warn); }
+.chip[data-tone="late"] { --ec: var(--danger); }
+.chip[data-tone="accent"], .chip.plain { --ec: var(--sc, var(--c-other)); }
 
-/* tables: hairline rows, mono uppercase header (minimal labels) */
-.table-wrap { max-width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.45; }
-th, td { padding: 10px 8px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
-th { font: 500 12px/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--faint); white-space: nowrap; border-top: 1px solid var(--line); }
-tbody tr:hover > td { background: var(--chip); }
+/* tables: inside the card, Bullets .preview-head style header */
+.table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: .86rem; line-height: 1.45; }
+th, td { padding: 9px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { font-size: .72rem; font-weight: 600; letter-spacing: .02em; color: var(--muted); white-space: nowrap; background: var(--surface-3); }
+tr:last-child > td { border-bottom: 0; }
+tbody tr:hover > td { background: var(--surface-2); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-.bar { display: inline-block; vertical-align: middle; width: 4rem; height: 6px; margin-right: 8px; background: var(--chip); border-radius: 999px; overflow: hidden; }
-.bar > i { display: block; height: 100%; background: var(--bar); border-radius: 999px; }
+.bar { display: inline-block; vertical-align: middle; width: 4rem; height: 6px; margin-right: 8px; background: var(--surface-3); border-radius: 999px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--sc, var(--c-mil)); border-radius: 999px; }
 
-/* summary rows: minimal .principle / .card rows */
+/* summary rows */
 .box-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
-.box-row .what { font-weight: 600; }
+.box-row .what { font-weight: 600; color: var(--hi); }
 .box-row .val { min-width: 0; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 .box-row .btn { justify-self: start; }
 @media (min-width: 641px) {
-  .box-row { grid-template-columns: 30% minmax(0, 1fr) auto; gap: 0 20px; align-items: start; }
+  .box-row { grid-template-columns: 30% minmax(0, 1fr) auto; gap: 0 16px; align-items: start; }
   .box-row .btn { justify-self: end; grid-column: 3; }
 }
 
-.checks { list-style: none; padding: 0; border-top: 1px solid var(--line); }
-.checks li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.checks { list-style: none; padding: 0; }
+.checks li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.checks li:last-child { border-bottom: 0; }
 
-/* fixed action bar */
-.actionbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--bg); border-top: 1px solid var(--line); }
-.actionbar .in { max-width: var(--w); margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; font-size: 14px; }
+/* fixed action bar: Bullets topbar glass */
+.actionbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 85%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--line); }
+.actionbar .in { max-width: var(--w); margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; font-size: .86rem; }
 .actionbar .spacer { flex: 1; }
 @media (max-width: 560px) { .actionbar .in { padding: 10px 16px; } }
 
-/* toast: minimal .theme-btn pill */
-.toast { position: fixed; left: 50%; bottom: 76px; transform: translateX(-50%); z-index: 20; max-width: calc(100% - 32px);
-  padding: 9px 14px; background: var(--bg); border-radius: 999px; box-shadow: 0 0 0 1px var(--line), 0 4px 16px rgba(0,0,0,.08);
-  color: var(--text); font: 500 13px/1.3 var(--sans); opacity: 0; transition: opacity .15s; pointer-events: none; }
-.toast.show { opacity: 1; }
+/* toast: Bullets #toast */
+.toast { position: fixed; left: 50%; bottom: 76px; transform: translateX(-50%) translateY(14px); z-index: 20; max-width: 90vw; text-align: center;
+  padding: 11px 20px; background: var(--text); color: var(--bg); border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  font-weight: 600; font-size: .86rem; opacity: 0; transition: opacity .18s, transform .18s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
