@@ -6,6 +6,7 @@
 <title>eSSS Builder</title>
 <link rel="icon" href="assets/favicon.png">
 <link rel="stylesheet" href="site.css">
+<script>if(!localStorage.getItem("sb-rfpkukgaiuguhgkdzgqk-auth-token"))document.documentElement.classList.add("locked")</script>
 <link rel="stylesheet" href="ui.css">
 <style>
 .route { display: grid; grid-template-columns: 24px minmax(0,1fr) 112px 32px; gap: 8px; align-items: center; }
@@ -304,5 +305,7 @@ $('fillBtn').onclick=async()=>{
 fill();
 idb('readonly',s=>s.get('blank')).then(v=>{if(v&&v.bytes){FORM=v;showForm()}else showForm()}).catch(()=>showForm());
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
 </body>
 </html>

@@ -53,3 +53,26 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 var(--sans);
   .home .hero{padding-top:44px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* site sign-in (auth.js): copy of the Falcon Bullets auth card. html.locked hides everything but the nav and the card. */
+#siteAuth{display:none}
+html.locked #siteAuth{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 160px);padding:24px 16px}
+html.locked body>*:not(.nav):not(#siteAuth){display:none!important}
+#siteAuth .auth-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:28px 26px}
+#siteAuth .auth-brand{margin-bottom:22px}
+#siteAuth .auth-brand strong{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;color:var(--hi)}
+#siteAuth .auth-tabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:20px}
+#siteAuth .auth-tab{flex:1;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--muted);font:600 .88rem var(--sans);padding:9px;border-radius:8px}
+#siteAuth .auth-tab.active{background:var(--text);color:var(--bg)}
+#siteAuth .auth-field{margin-bottom:14px}
+#siteAuth .lab{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+#siteAuth input{width:100%;font:.9rem var(--sans);color:var(--text);background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px}
+#siteAuth input::placeholder{color:var(--faint)}
+#siteAuth input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+#siteAuth .auth-submit{width:100%;cursor:pointer;font:600 .86rem var(--sans);border-radius:10px;padding:10px 16px;border:0;background:var(--text);color:var(--bg)}
+#siteAuth .auth-submit:hover{opacity:.86}
+#siteAuth .auth-submit[disabled]{opacity:.6;cursor:default}
+#siteAuth .auth-msg{font-size:.82rem;border-radius:9px;padding:9px 12px;margin-bottom:14px}
+#siteAuth .auth-msg.err{background:rgba(239,68,68,.13);border:1px solid rgba(239,68,68,.4);color:#ff6b6b}
+#siteAuth .auth-msg.ok{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);color:#3fb950}
+#siteAuth .auth-note{font-size:.76rem;color:var(--faint);margin-top:14px;text-align:center}
