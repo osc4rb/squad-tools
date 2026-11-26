@@ -42,8 +42,7 @@
     $("sa-signup").classList.toggle("active", !login);
     $("sa-submit").textContent = login ? "Log in" : "Create account";
     $("sa-pass").setAttribute("autocomplete", login ? "current-password" : "new-password");
-    $("sa-note").textContent = login ? "Use your " + EMAIL_DOMAIN + " email."
-      : "Use your " + EMAIL_DOMAIN + " email. Pick any password (6+ characters).";
+    $("sa-note").textContent = login ? "" : EMAIL_DOMAIN + " email. Password 6+ characters.";
     hideMsg();
   }
   function showMsg(text, kind) { var m = $("sa-msg"); m.textContent = text; m.className = "auth-msg " + (kind || "err"); m.hidden = false; }
@@ -57,7 +56,7 @@
     var email = $("sa-email").value.trim().toLowerCase(), pass = $("sa-pass").value;
     if (!email || !pass) { showMsg("Enter your email and password."); return; }
     var domain = email.split("@")[1] || "";
-    if (mode === "signup" && !/(^|\.)afacademy\.(af\.)?edu$/.test(domain)) { showMsg("Please sign up with your academy email (ending in afacademy.af.edu)."); return; }
+    if (mode === "signup" && !/(^|\.)afacademy\.(af\.)?edu$/.test(domain)) { showMsg("Use an " + EMAIL_DOMAIN + " email."); return; }
     if (mode === "signup" && pass.length < 6) { showMsg("Password must be at least 6 characters."); return; }
     var btn = $("sa-submit"), label = mode === "login" ? "Log in" : "Create account";
     btn.disabled = true; btn.textContent = mode === "login" ? "Logging in…" : "Creating…"; hideMsg();
@@ -68,14 +67,14 @@
       btn.disabled = false; btn.textContent = label;
       if (res.error) {
         var m = res.error.message || "Something went wrong.";
-        if (mode === "login" && /invalid login/i.test(m)) showMsg("No account found with that email and password. New here? Tap “Sign up” above to create your account first.");
-        else if (/not confirmed/i.test(m)) showMsg("This account still needs confirming. Check your " + EMAIL_DOMAIN + " inbox.");
-        else if (/already registered|already exists/i.test(m)) showMsg("That email already has an account — switch to “Log in”.");
+        if (mode === "login" && /invalid login/i.test(m)) showMsg("Wrong email or password.");
+        else if (/not confirmed/i.test(m)) showMsg("Account not confirmed. Check your email.");
+        else if (/already registered|already exists/i.test(m)) showMsg("Account already exists. Log in.");
         else showMsg(m);
         return;
       }
-      if (mode === "signup" && !res.data.session) { showMsg("Account created. Check your " + EMAIL_DOMAIN + " inbox to confirm, then log in.", "ok"); setMode("login"); }
-    }, function () { btn.disabled = false; btn.textContent = label; showMsg("Network error — try again."); });
+      if (mode === "signup" && !res.data.session) { showMsg("Account created. Confirm it from your email, then log in.", "ok"); setMode("login"); }
+    }, function () { btn.disabled = false; btn.textContent = label; showMsg("Network error."); });
   });
 
   var links = document.querySelector(".nav-links"), out = null;

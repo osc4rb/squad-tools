@@ -317,7 +317,7 @@
       </div>
       <button type="submit" class="btn btn-primary btn-block" id="authSubmit">Log in</button>
     </form>
-    <div class="auth-note" id="authNote">Use your @afacademy.af.edu email. Your bullets sync to every device you log in on.</div>
+    <div class="auth-note" id="authNote"></div>
   </div>
 </div>
 
@@ -351,9 +351,9 @@
           <div class="field">
             <label class="lab">Build the bullet</label>
             <div class="builder">
-              <div><div class="mini-lab">Action — what you did</div><textarea id="f-action" placeholder="Led 12-cadet team through 4-hr night land-nav course"></textarea></div>
-              <div><div class="mini-lab">Impact — why it mattered</div><textarea id="f-impact" placeholder="sharpened squadron field skills before summer field training"></textarea></div>
-              <div><div class="mini-lab">Result — the outcome</div><textarea id="f-result" placeholder="100% passed; unit rated top 3 of 40"></textarea></div>
+              <div><div class="mini-lab">Action</div><textarea id="f-action" placeholder="Led 12-cadet team through 4-hr night land-nav course"></textarea></div>
+              <div><div class="mini-lab">Impact</div><textarea id="f-impact" placeholder="sharpened squadron field skills before summer field training"></textarea></div>
+              <div><div class="mini-lab">Result</div><textarea id="f-result" placeholder="100% passed; unit rated top 3 of 40"></textarea></div>
             </div>
             <div class="opts-row">
               <label class="check"><input type="checkbox" id="f-dash" checked> Lead with dash</label>
@@ -363,7 +363,7 @@
 
           <div class="preview" id="previewBox">
             <div class="preview-head"><span>PREVIEW</span><span class="count" id="count">0</span></div>
-            <div class="preview-body empty" id="previewBody">Fill in the bullet to see it here</div>
+            <div class="preview-body empty" id="previewBody"></div>
           </div>
 
           <div class="form-actions">
@@ -447,7 +447,7 @@
         <textarea id="p-dutydesc" class="exp-desc auto"></textarea>
       </div>
 
-      <div class="exp-h">II. Cadet rater assessment &mdash; one sentence each</div>
+      <div class="exp-h">II. Cadet rater assessment</div>
       <div id="exportSections"></div>
       <div class="exp-footer">
         <button class="btn btn-primary" id="download715">
@@ -576,8 +576,8 @@
     $("#authSubmit").textContent = login ? "Log in" : "Create account";
     $("#au-pass").setAttribute("autocomplete", login ? "current-password" : "new-password");
     $("#authNote").textContent = login
-      ? "Logging in syncs your bullets from the cloud to this device."
-      : "Use your " + EMAIL_DOMAIN + " email. Pick any password (6+ characters).";
+      ? ""
+      : EMAIL_DOMAIN + " email. Password 6+ characters.";
     hideAuthMsg();
   }
   function showAuthMsg(text, kind) {
@@ -596,7 +596,7 @@
     if (!email || !pass) { showAuthMsg("Enter your email and password."); return; }
     var domain = (email.split("@")[1] || "");
     if (authMode === "signup" && !/(^|\.)afacademy\.(af\.)?edu$/.test(domain)) {
-      showAuthMsg("Please sign up with your academy email (ending in afacademy.af.edu)."); return;
+      showAuthMsg("Use an " + EMAIL_DOMAIN + " email."); return;
     }
     if (authMode === "signup" && pass.length < 6) { showAuthMsg("Password must be at least 6 characters."); return; }
 
@@ -614,25 +614,25 @@
       if (res.error) {
         var m = res.error.message || "Something went wrong.";
         if (authMode === "login" && /invalid login/i.test(m)) {
-          showAuthMsg("No account found with that email and password. New here? Tap “Sign up” above to create your account first.");
+          showAuthMsg("Wrong email or password.");
         } else if (/not confirmed/i.test(m)) {
-          showAuthMsg("This account was started earlier and still needs confirming. Tell the site owner to reset it, or use a different email.");
+          showAuthMsg("Account not confirmed. Check your email.");
         } else if (/already registered|already exists/i.test(m)) {
-          showAuthMsg("That email already has an account — switch to “Log in”.");
+          showAuthMsg("Account already exists. Log in.");
         } else {
           showAuthMsg(m);
         }
         return;
       }
       if (authMode === "signup" && !res.data.session) {
-        showAuthMsg("Account created. Check your " + EMAIL_DOMAIN + " inbox to confirm, then log in.", "ok");
+        showAuthMsg("Account created. Confirm it from your email, then log in.", "ok");
         setAuthMode("login");
       }
       // On success with a session, onAuthStateChange routes to the app.
     }, function () {
       btn.disabled = false;
       btn.textContent = authMode === "login" ? "Log in" : "Create account";
-      showAuthMsg("Network error — try again.");
+      showAuthMsg("Network error.");
     });
   });
 
@@ -692,7 +692,7 @@
     var body = $("#previewBody"), cnt = $("#count"), box = $("#previewBox");
     var limit = getLimit();
     if (!txt) {
-      body.textContent = "Fill in the bullet to see it here"; body.classList.add("empty");
+      body.textContent = ""; body.classList.add("empty");
       cnt.textContent = limit ? "0 / " + limit : "0";
       cnt.classList.remove("over"); box.classList.remove("over");
       return;
@@ -743,8 +743,8 @@
       var e = document.createElement("div");
       e.className = "empty";
       e.innerHTML = store.length
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><h3>No matches</h3><div>Try another search or area.</div>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><h3>Nothing logged yet</h3><div>Add your first accomplishment on the left.</div>';
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><h3>No matches</h3>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><h3>Nothing logged yet</h3>';
       list.appendChild(e);
       return;
     }
@@ -1105,7 +1105,7 @@
       sec.style.setProperty("--sc", c.color);
       var src = bullets.length
         ? '<ul>' + bullets.map(function (b) { return '<li>' + esc(b) + '</li>'; }).join("") + '</ul>'
-        : '<div class="sec-none">No bullets logged in this section yet.</div>';
+        : '<div class="sec-none">No bullets.</div>';
       sec.innerHTML =
         '<div class="sec-head"><h3>' + (i + 1) + '. ' + esc(c.name) + '</h3><span class="seccount"></span></div>' +
         '<div class="sec-hint">' + esc(c.hint) + '</div>' +
@@ -1118,7 +1118,7 @@
         cnt.textContent = n + " / " + SECTION_TARGET;
         cnt.classList.toggle("warn", n > SECTION_TARGET && n <= SECTION_MAX);
         cnt.classList.toggle("over", n > SECTION_MAX);
-        cnt.title = n > SECTION_MAX ? "Too long — it will print very small" : n > SECTION_TARGET ? "Will print a little smaller to fit" : "";
+        cnt.title = n > SECTION_MAX ? "Too long: prints very small" : n > SECTION_TARGET ? "Prints smaller to fit" : "";
       }
       tick();
       ta.addEventListener("input", function () { pref.sentences[c.key] = ta.value; save715(); tick(); });
@@ -1202,7 +1202,7 @@
   function formBytes() {
     if (formCache) return Promise.resolve(formCache.slice(0));
     return sb.from("forms").select("data").eq("name", "usafa715a").single().then(function (res) {
-      if (res.error || !res.data) throw new Error("the form didn't load — sign out and back in, then try again");
+      if (res.error || !res.data) throw new Error("form did not load. Sign out and back in.");
       var bin = atob(res.data.data), out = new Uint8Array(bin.length);
       for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
       formCache = out;
@@ -1210,7 +1210,7 @@
     });
   }
   function download715() {
-    if (!window.PDFLib) { toast("PDF tool still loading — try again in a moment"); return; }
+    if (!window.PDFLib) { toast("PDF tool still loading"); return; }
     var btn = $("#download715"); btn.disabled = true;
     var v = f715();
     var values = { name: v.name, class_rank: v.class_rank, unit: v.unit, semester: v.semester,
@@ -1242,7 +1242,7 @@
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
       btn.disabled = false;
-      toast("Downloaded — open it in Adobe Acrobat to sign");
+      toast("Downloaded");
     }).catch(function (err) {
       btn.disabled = false;
       toast("Couldn't build the 715a: " + err.message);
