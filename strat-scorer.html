@@ -107,9 +107,9 @@ function toast(m){const el=$('toast');el.textContent=m;el.classList.add('show');
 /* scale */
 function renderScale(){
   let h=`<div class="page-head"><h1>The scale</h1></div>
-  <section class="section"><div class="section-head"><h3>How a number gets made</h3></div>
-  <div class="group pad"><p>For each written bullet the rater answers three questions; the points add up to 0 to 10. A rubric area takes the cadet's best three bullets, weighted ${S.depth.map(esc).join(' / ')}. Presence & Attitude is five yes/no statements worth 2 points each. The four areas are weighted into a total out of 100.</p></div>
-  <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th class="num">Points</th><th>What it looks like</th></tr></thead><tbody>
+  <section class="section"><div class="section-head"><h3>Scoring</h3></div>
+  <div class="group pad"><p>Each bullet: three answers, 0 to 10 points. Area: best three bullets, weighted ${S.depth.map(esc).join(' / ')}. Presence & Attitude: five yes/no items, 2 points each. Total: the four areas weighted to 100.</p></div>
+  <div class="table-wrap" style="margin-top:12px"><table><thead><tr><th class="num">Points</th><th>Example</th></tr></thead><tbody>
   <tr><td class="num">2</td><td>Did the assigned job to standard. No result written.</td></tr>
   <tr><td class="num">4</td><td>Did the job to standard and shows a result with a number.</td></tr>
   <tr><td class="num">6</td><td>Went past the job or led something, with a result anyone can check.</td></tr>
@@ -121,10 +121,10 @@ function renderScale(){
     c.dials.forEach(d=>{h+=`<div class="table-wrap" style="margin-bottom:12px"><table><thead><tr><th class="num">Pts</th><th>${esc(d.q)}</th></tr></thead><tbody>`+d.o.map((o,i)=>`<tr><td class="num">${i}</td><td>${esc(o)}</td></tr>`).join('')+`</tbody></table></div>`});
     h+=`<div class="group">`+c.ex.map(([tx,d])=>`<div class="row-item ex"><div class="bullet-top"><span class="chip" data-tone="accent">${d[0]+d[1]+d[2]} pts</span><span>${esc(tx)}</span></div><div class="meta t-small t-muted">${d.map((v,j)=>esc(c.dials[j].o[v])+' ('+v+')').join(' + ')}</div></div>`).join('')+`</div></section>`}
   h+=`<section class="section"><div class="section-head"><h3>Presence & Attitude</h3><span class="chip plain">${esc(S.weights.pres)}%</span></div><p class="lead">Yes or no, 2 points each.</p><div class="group">`+PRES.map(p=>`<div class="row-item">${esc(p)}</div>`).join('')+`</div></section>`;
-  h+=`<section class="section"><div class="section-head"><h3>Keeping flights comparable</h3></div><div class="group">
-  <div class="row-item">Each flight exports a file; the strat board imports all of them into one Board. Scores are recalculated with the board's weights.</div>
-  <div class="row-item">When two raters score the same cadet, the Board averages them and flags a gap of 10 points or more.</div>
-  <div class="row-item">The Board flags any flight of 3+ cadets whose average sits 8 or more points from the class average.</div></div></section>
+  h+=`<section class="section"><div class="section-head"><h3>Board rules</h3></div><div class="group">
+  <div class="row-item">Flights export files; the Board imports them and rescores with its own weights.</div>
+  <div class="row-item">Two raters on one cadet: averaged, flagged if 10+ points apart.</div>
+  <div class="row-item">A flight of 3+ cadets is flagged if its average is 8+ points from the class average.</div></div></section>
   <section class="section"><div class="section-head"><h3>Weights</h3><span class="actions t-small t-muted" id="wmsg"></span></div><div class="group pad">
   <div class="grid">`+ALL.map(k=>`<label class="field"><span>${SHORT[k]} %</span><input class="input num" type="number" min="0" max="100" data-w="${k}" value="${esc(S.weights[k])}"></label>`).join('')+`</div>
   <div class="grid">`+[0,1,2].map(i=>`<label class="field"><span>${['Best','Second','Third'][i]} bullet %</span><input class="input num" type="number" min="0" max="100" data-dp="${i}" value="${esc(S.depth[i])}"></label>`).join('')+`</div></div></section>`;
@@ -217,7 +217,7 @@ $('v-board').addEventListener('click',e=>{const b=e.target.closest('button'),a=b
   if(a==='csv'){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const rows=groups().filter(g=>(!FY||g.year===FY)&&(!FF||g.flight===FF)).sort((x,y)=>y.total-x.total);if(!rows.length){toast('Nothing to export');return}
     dl('strat-board-'+today()+'.csv','Rank,Cadet,Year,Flight,Job,Duty,Leadership,OutOfSquadron,Presence,Total,Raters,RaterGap\r\n'+rows.map((g,i)=>[i+1,q(g.name),q(g.year),q(g.flight),q(g.job),f1(g.duty),f1(g.lead),f1(g.out),f1(g.pres),f1(g.total),g.list.length,f1(g.gap)].join(',')).join('\r\n'),'text/csv');return}
   if(a==='demo'){if(S.entries.length&&!confirm('Add 9 made-up example cadets to the scores already here?'))return;S.entries.push(...demo());save();renderBoard();toast('Example loaded (made-up cadets)');return}
-  if(a==='clear'){if(S.entries.length&&confirm('Delete all '+S.entries.length+' scores in this browser? Export a file first if you need them.')){S.entries=[];save();renderBoard()}return}
+  if(a==='clear'){if(S.entries.length&&confirm('Delete all '+S.entries.length+' scores in this browser?')){S.entries=[];save();renderBoard()}return}
   const tr=e.target.closest('tr.click');if(tr){openKey=openKey===tr.dataset.k?null:tr.dataset.k;renderBoard()}});
 $('file').addEventListener('change',async e=>{let add=0,upd=0,bad=0;
   for(const f of e.target.files){try{const j=JSON.parse(await f.text());if(!j||j.app!=='strat-scorer'||!Array.isArray(j.entries))throw 0;

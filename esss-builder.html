@@ -298,7 +298,7 @@ $('fillBtn').onclick=async()=>{
   try{const out=await EsssPdf.fill(FORM.bytes,pdfValues());
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'application/pdf'}));a.download=fileName();
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-    toast('Saved '+fileName()+'. Open it in Acrobat to sign.')}catch(err){toast(err.message||'Could not fill the PDF')}};
+    toast('Saved '+fileName())}catch(err){toast(err.message||'Could not fill the PDF')}};
 fill();
 idb('readonly',s=>s.get('blank')).then(v=>{if(v&&v.bytes){FORM=v;showForm()}else showForm()}).catch(()=>showForm());
 </script>
