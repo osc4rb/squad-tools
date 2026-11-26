@@ -5,41 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>eSSS Builder</title>
 <link rel="icon" href="assets/favicon.png">
-<link rel="stylesheet" href="vendor/uswds/css/uswds.min.css">
-<link rel="stylesheet" href="cs37-theme.css">
+<link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="ui.css">
-<script src="vendor/uswds/js/uswds-init.min.js"></script>
 <style>
 .route { display: grid; grid-template-columns: 24px minmax(0,1fr) 112px 32px; gap: 8px; align-items: center; }
 .route + .route { margin-top: 8px; }
-.leg { display: grid; grid-template-columns: 150px minmax(0,1.3fr) 116px minmax(0,1.3fr) 116px minmax(0,1fr) 32px; gap: 8px; align-items: center; }
-.leg + .leg { margin-top: 8px; }
-@media (max-width: 860px) { .leg { grid-template-columns: 1fr 1fr; padding-top: 15px; border-top: 1px solid var(--border); } .leg + .leg { margin-top: 15px; } .leg:first-child { border-top: 0; padding-top: 0; } .leg .btn-icon { justify-self: end; grid-column: 2; } }
+/* one 680px column: each itinerary leg is a two-column block */
+.leg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; padding-top: 16px; border-top: 1px solid var(--border); }
+.leg + .leg { margin-top: 16px; }
+.leg:first-child { border-top: 0; padding-top: 0; }
+.leg .btn-icon { justify-self: end; grid-column: 2; }
 .formfile { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 </style>
 </head>
 <body>
-<a class="usa-skipnav" href="#form">Skip to main content</a>
-<div class="usa-overlay"></div>
-<header class="usa-header usa-header--basic">
-  <div class="usa-nav-container">
-    <div class="usa-navbar">
-      <div class="usa-logo">
-        <em class="usa-logo__text"><a href="./" title="CS-37"><img class="cs37-patch" src="assets/cs37-patch.png" alt="">CS-37</a></em>
-      </div>
-      <button type="button" class="usa-menu-btn">Menu</button>
-    </div>
-    <nav aria-label="Primary navigation" class="usa-nav">
-      <button type="button" class="usa-nav__close"><img src="vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
-      <ul class="usa-nav__primary usa-accordion">
-        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link"><span>Home</span></a></li>
-        <li class="usa-nav__primary-item"><a href="esss-builder.html" class="usa-nav-link usa-current" aria-current="page"><span>eSSS</span></a></li>
-        <li class="usa-nav__primary-item"><a href="strat-scorer.html" class="usa-nav-link"><span>Strats</span></a></li>
-        <li class="usa-nav__primary-item"><a href="bullets/" class="usa-nav-link"><span>Bullets</span></a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
+  <nav class="nav-links" aria-label="Primary"><a href="./">Home</a><a href="esss-builder.html" class="on" aria-current="page">eSSS</a><a href="strat-scorer.html">Strats</a><a href="bullets/">Bullets</a></nav>
+</div></header>
 <header class="topbar"><div class="in">
   <span class="name">eSSS Builder</span>
   <span class="spacer"></span>
@@ -151,25 +134,7 @@
     <div class="group" id="boxes"></div>
   </section>
 </main>
-<footer class="usa-footer">
-  <div class="grid-container usa-footer__return-to-top">
-    <a href="#">Return to top</a>
-  </div>
-  <div class="usa-footer__secondary-section">
-    <div class="grid-container">
-      <div class="grid-row grid-gap">
-        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
-          <div class="mobile-lg:grid-col-auto">
-            <img class="usa-footer__logo-img" src="assets/cs37-patch.png" alt="">
-          </div>
-          <div class="mobile-lg:grid-col-auto">
-            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+<footer class="wrap"><div class="foot">Cadet Squadron 37</div></footer>
 
 <div class="actionbar"><div class="in">
   <span class="t-muted" id="barMsg"></span>
@@ -339,6 +304,5 @@ $('fillBtn').onclick=async()=>{
 fill();
 idb('readonly',s=>s.get('blank')).then(v=>{if(v&&v.bytes){FORM=v;showForm()}else showForm()}).catch(()=>showForm());
 </script>
-<script src="vendor/uswds/js/uswds.min.js"></script>
 </body>
 </html>
