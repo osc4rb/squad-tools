@@ -5,85 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CS-37</title>
 <link rel="icon" href="assets/favicon.png">
-<link rel="stylesheet" href="vendor/uswds/css/uswds.min.css">
-<link rel="stylesheet" href="cs37-theme.css">
-<script src="vendor/uswds/js/uswds-init.min.js"></script>
+<link rel="stylesheet" href="site.css">
 </head>
-<body>
-<a class="usa-skipnav" href="#main-content">Skip to main content</a>
-<div class="usa-overlay"></div>
-<header class="usa-header usa-header--basic">
-  <div class="usa-nav-container">
-    <div class="usa-navbar">
-      <div class="usa-logo">
-        <em class="usa-logo__text"><a href="./" title="CS-37"><img class="cs37-patch" src="assets/cs37-patch.png" alt="">CS-37</a></em>
-      </div>
-      <button type="button" class="usa-menu-btn">Menu</button>
-    </div>
-    <nav aria-label="Primary navigation" class="usa-nav">
-      <button type="button" class="usa-nav__close"><img src="vendor/uswds/img/usa-icons/close.svg" role="img" alt="Close"></button>
-      <ul class="usa-nav__primary usa-accordion">
-        <li class="usa-nav__primary-item"><a href="./" class="usa-nav-link usa-current" aria-current="page"><span>Home</span></a></li>
-        <li class="usa-nav__primary-item"><a href="esss-builder.html" class="usa-nav-link"><span>eSSS</span></a></li>
-        <li class="usa-nav__primary-item"><a href="strat-scorer.html" class="usa-nav-link"><span>Strats</span></a></li>
-        <li class="usa-nav__primary-item"><a href="bullets/" class="usa-nav-link"><span>Bullets</span></a></li>
-      </ul>
-    </nav>
+<body class="home">
+<header class="nav"><div class="wrap">
+  <a class="brand" href="./"><img src="assets/cs37-patch.png" alt="">CS-37</a>
+  <nav class="nav-links" aria-label="Primary"><a href="./" class="on" aria-current="page">Home</a><a href="esss-builder.html">eSSS</a><a href="strat-scorer.html">Strats</a><a href="bullets/">Bullets</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero"><h1 class="name">Cadet Squadron 37</h1></section>
+  <div class="cards">
+    <article class="card"><h3><a href="esss-builder.html">eSSS Builder</a></h3></article>
+    <article class="card"><h3><a href="strat-scorer.html">Strat Scorer</a></h3></article>
+    <article class="card"><h3><a href="bullets/">Falcon Bullets</a></h3></article>
   </div>
-</header>
-
-<main id="main-content">
-  <section class="usa-hero" aria-label="Introduction">
-    <div class="grid-container">
-      <div class="usa-hero__callout">
-        <h1 class="usa-hero__heading">Cadet Squadron 37</h1>
-        <a class="usa-button" href="esss-builder.html">Build an eSSS</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="usa-graphic-list usa-section usa-section--dark">
-    <div class="grid-container">
-      <div class="usa-graphic-list__row grid-row grid-gap">
-        <div class="usa-media-block tablet:grid-col">
-          <div class="usa-media-block__body">
-            <h2 class="usa-graphic-list__heading"><a href="esss-builder.html">eSSS Builder</a></h2>
-          </div>
-        </div>
-        <div class="usa-media-block tablet:grid-col">
-          <div class="usa-media-block__body">
-            <h2 class="usa-graphic-list__heading"><a href="strat-scorer.html">Strat Scorer</a></h2>
-          </div>
-        </div>
-        <div class="usa-media-block tablet:grid-col">
-          <div class="usa-media-block__body">
-            <h2 class="usa-graphic-list__heading"><a href="bullets/">Falcon Bullets</a></h2>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
-<footer class="usa-footer">
-  <div class="grid-container usa-footer__return-to-top">
-    <a href="#">Return to top</a>
-  </div>
-  <div class="usa-footer__secondary-section">
-    <div class="grid-container">
-      <div class="grid-row grid-gap">
-        <div class="usa-footer__logo grid-row mobile-lg:grid-col-6 mobile-lg:grid-gap-2">
-          <div class="mobile-lg:grid-col-auto">
-            <img class="usa-footer__logo-img" src="assets/cs37-patch.png" alt="">
-          </div>
-          <div class="mobile-lg:grid-col-auto">
-            <p class="usa-footer__logo-heading">Cadet Squadron 37</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-<script src="vendor/uswds/js/uswds.min.js"></script>
+<footer class="wrap"><div class="foot">Cadet Squadron 37</div></footer>
 </body>
 </html>
